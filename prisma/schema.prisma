@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String
+  email     String?
+  role      String   @default("user")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  budgets   Budget[]
+}
+
+model Client {
+  id         String      @id @default(cuid())
+  name       String
+  email      String?
+  phone      String?
+  address    String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  budgets    Budget[]
+  recipients Recipient[]
+}
+
+model Recipient {
+  id        String   @id @default(cuid())
+  clientId  String
+  name      String
+  email     String?
+  phone     String?
+  position  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  budgets   Budget[]
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+model Budget {
+  id            String    @id @default(cuid())
+  folio         String    @unique
+  userId        String
+  clientId      String
+  recipientId   String
+  date          String
+  description   String?
+  concepts      Json
+  subtotal      Float
+  ivaPercentage Float     @default(16)
+  ivaAmount     Float
+  total         Float
+  status        String    @default("active")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  recipient     Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  client        Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
