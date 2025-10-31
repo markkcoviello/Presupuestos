@@ -1,60 +1,53 @@
-/* --- reporte.module.css - VERSIÓN DEFINITIVA Y CORREGIDA --- */
+/* --- reporte.module.css - VERSIÓN FINAL Y ROBUSTA --- */
 
-/* 1. LA REGLA CLAVE: @page
-   Define los márgenes para CADA página del PDF.
-   Sintaxis: [arriba] [derecha] [abajo] [izquierda]
-   Esto reemplaza todo el padding que teníamos antes.
-*/
+/* 1. REGLA @page: Define los márgenes de CADA página del PDF. */
 @page {
   margin: 4cm 2cm 5cm; /* 4cm arriba, 2cm lados, 5cm abajo */
-  size: Letter; /* Asegura que el tamaño de página sea Carta */
+  size: Letter; /* Tamaño Carta */
 }
 
-/* 2. EL FONDO (LA PLANTILLA)
-   Se mantiene igual. Ahora se posicionará sobre los márgenes definidos por @page.
+/* 2. FONDO para IMPRESIÓN: Usamos un pseudo-elemento en el body.
+   Esto es mucho más robusto que un <img> con position: fixed.
+   Se aplicará SOLO cuando se genere el PDF o se imprima la página.
 */
-.background {
-  position: fixed; 
-  top: 0;
-  left: 0;
-  width: 21.59cm;
-  height: 27.94cm;
-  z-index: -1;
-  object-fit: cover;
+@media print {
+  body::before {
+    content: "";
+    position: fixed; /* Fijo en cada página */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Usar viewport para cubrir todo */
+    height: 100vh;
+    background-image: url('/membrete.png');
+    background-size: cover; /* Asegura que cubra toda la página */
+    background-position: center;
+    z-index: -1; /* Detrás de todo el contenido */
+    pointer-events: none; /* No interfiere con el contenido */
+  }
 }
 
-/* 3. EL CONTENEDOR DE LA PÁGINA
-   QUITAMOS todo el padding y los márgenes. Su único trabajo es definir el tamaño.
-   El flujo de contenido y los márgenes ahora los controla @page.
-*/
+/* 3. Contenedor Principal: Simplificado. Su único trabajo es existir. */
 .reportPage {
-  width: 21.59cm;    
-  /* No necesitamos min-height, el contenido fluirá naturalmente */
+  /* El tamaño y los márgenes ahora los controla @page */
   position: relative;
-  background-color: transparent;
-  box-sizing: border-box; 
-  margin: 0 auto; /* Solo para centrar en la vista previa del navegador */
-  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Solo para vista previa */
+  background-color: transparent; /* Fondo transparente para que se vea el watermark */
+  box-sizing: border-box;
+  
+  /* Eliminamos estilos que solo sirven para la vista en navegador y pueden interferir */
+  /* width: 21.59cm; <-- Ya no es necesario */
+  /* margin: 0 auto; <-- Ya no es necesario */
+  /* box-shadow: 0 0 10px rgba(0,0,0,0.1); <-- Eliminado, causa problemas en impresión */
 }
 
-/* 4. EL CONTENIDO
-   Ya no necesita padding. Los márgenes los define @page.
-*/
+/* 4. Contenido: También simplificado. */
 .content {
   position: relative;
-  z-index: 2;
+  z-index: 1; /* Encima del fondo */
   font-family: Arial, sans-serif;
   color: #333;
-  width: 100%;
-  box-sizing: border-box;
 }
 
-/* --- ELIMINAMOS LAS CLASES DE SALTO DE PÁGINA MANUAL ---
-   Ya no son necesarias. El motor de PDF se encargará de los saltos
-   cuando el contenido rebase el área definida por los márgenes de @page.
-*/
-
-/* --- (El resto de tu CSS, simplificado) --- */
+/* --- (El resto de tus estilos para tablas, headers, etc. se mantiene igual) --- */
 
 .label {
   font-weight: bold;
@@ -97,7 +90,7 @@
   border-collapse: collapse;
   margin-bottom: 24px;
   font-size: 11px;
-  page-break-inside: avoid; /* Evita que una fila se corte a mitad */
+  page-break-inside: avoid;
 }
 .table th, .table td {
   text-align: left;
@@ -121,12 +114,11 @@
   border-bottom: 1px solid #eee;
 }
 
-/* Footer simplificado. @page se encarga del margen inferior. */
 .footer {
   display: flex;
   justify-content: flex-end; 
-  page-break-inside: avoid; /* Evita que el footer se corte */
-  margin-top: 2cm; /* Solo un pequeño margen superior para separar de la tabla */
+  page-break-inside: avoid;
+  margin-top: 2cm;
 }
 .totals {
   width: 250px;

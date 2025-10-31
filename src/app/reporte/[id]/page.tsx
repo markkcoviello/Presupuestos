@@ -1,4 +1,4 @@
-// --- CÓDIGO SIMPLIFICADO Y CORREGIDO para: src/app/reporte/[id]/page.tsx ---
+// --- CÓDIGO FINAL Y CORREGIDO para: src/app/reporte/[id]/page.tsx ---
 
 import React from 'react';
 import { db } from '@/lib/db'; 
@@ -49,21 +49,17 @@ const formatCurrency = (value: number | null | undefined) => {
   });
 };
 
-/* --- 4. El Componente del Reporte (SIMPLIFICADO) --- */
+/* --- El Componente del Reporte (SIN LA IMAGEN DE FONDO) --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
   const budget = await getBudgetData(params.id) as BudgetData;
   const concepts = budget.concepts as Concept[];
   
-  // ¡YA NO NECESITAMOS LA LÓGICA DE SALTO DE PÁGINA!
-  // El motor de PDF lo hará automáticamente gracias a @page.
-  
   return (
     <main className={styles.reportPage}>
-      <img 
-        src="/membrete.png"
-        className={styles.background} 
-        alt="Membrete" 
-      />
+      
+      {/* 1. ¡LA IMAGEN DE FONDO HA SIDO ELIMINADA DE AQUÍ! 
+          Ahora la gestiona el CSS de forma más robusta. */}
+      
       <div className={styles.content}>
         
         <header className={styles.header}>
@@ -98,7 +94,6 @@ export default async function ReportePage({ params }: { params: { id: string } }
             </tr>
           </thead>
           <tbody>
-            {/* Simplemente mapeamos los conceptos. Sin lógica extra. */}
             {concepts.map((concept) => (
               <React.Fragment key={concept.id}>
                 {concept.type === 'title' ? (
