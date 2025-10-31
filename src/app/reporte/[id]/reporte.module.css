@@ -1,51 +1,45 @@
-/* --- reporte.module.css - VERSIÓN AUDITADA Y DEFINITIVA --- */
+/* --- reporte.module.css - VERSIÓN FINAL CORREGIDA --- */
 
-/* 1. CONFIGURACIÓN DE PÁGINA PARA PUPPETEER
-   Esto es lo más importante. Define los márgenes de CADA página.
-   Le di el poquito de espacio extra que pediste arriba: 4.5cm.
-   Sintaxis: [arriba] [derecha] [abajo] [izquierda]
-*/
+/* 1. REGLA @PAGE: ¡No la tocamos! Es perfecta. */
 @page {
-  margin: 4.5cm 2cm 5cm;
+  margin: 4.5cm 2cm 5cm; /* Los márgenes que aprobaste */
   size: Letter;
 }
 
-/* 2. LA MARCA DE AGUA (LA IMAGEN DE FONDO)
-   Esta es la forma correcta y robusta de poner un fondo que se repite.
-   position: fixed en modo de impresión se ancla a CADA PÁGINA.
+/* 2. LA MARCA DE AGUA (LA IMAGEN DE FONDO) - CORREGIDA
+   Usamos position: fixed, pero con el tamaño EXACTO de la hoja en cm.
+   Esto elimina cualquier ambigüedad de las unidades vw/vh.
 */
 .watermark {
   position: fixed;
   top: 0;
   left: 0;
-  /* Usamos el viewport de impresión para cubrir la página entera */
-  width: 100vw; 
-  height: 100vh;
-  z-index: -1; /* Se asegura de que esté detrás de todo el contenido */
-  object-fit: cover; /* La imagen cubre toda la página sin deformarse */
-  pointer-events: none; /* Evita que interfiera con cualquier interacción */
+  /* Tamaño exacto y absoluto de una hoja Carta */
+  width: 21.59cm; 
+  height: 27.94cm;
+  z-index: -1; /* Detrás de todo */
+  object-fit: cover; /* Cubre toda el área definida */
+  pointer-events: none; /* No interfiere */
 }
 
-/* 3. CONTENEDOR PRINCIPAL
-   ¡MUY IMPORTANTE! Sin altura fija, sin overflow.
-   Es solo un contenedor que permite que su contenido fluya naturalmente.
+/* 3. CONTENEDOR PRINCIPAL - SIMPLIFICADO
+   Sin altura fija, sin overflow. Solo un contenedor transparente.
 */
 .reportPage {
-  position: relative; /* Necesario para que el z-index del watermark funcione */
-  background-color: transparent; /* Fondo transparente para ver la imagen */
+  position: relative;
+  background-color: transparent;
   font-family: Arial, sans-serif;
   color: #333;
 }
 
-/* 4. CONTENIDO
-   Este div contiene todo tu texto y tablas.
-   Permanece en el flujo normal del documento, lo que permite la paginación.
+/* 4. CONTENIDO - SIN ESTILOS DE MARGEN
+   El contenido fluye libremente, @page se encarga de los márgenes.
 */
 .content {
-  /* No necesita posicionamiento ni márgenes. @page se encarga de todo. */
+  /* No necesita nada aquí */
 }
 
-/* --- ESTILOS DEL CONTENIDO (sin cambios funcionales) --- */
+/* --- (El resto de tus estilos se mantiene igual) --- */
 
 .label {
   font-weight: bold;
@@ -88,7 +82,6 @@
   border-collapse: collapse;
   margin-bottom: 24px;
   font-size: 11px;
-  /* page-break-inside: avoid; puede ser problemático, lo quitamos para que el flujo sea natural */
 }
 .table th, .table td {
   text-align: left;
