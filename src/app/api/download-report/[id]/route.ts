@@ -42,7 +42,17 @@ export async function GET(
   try {
     // 2. Lanzamos el navegador robot
     browser = await puppeteer.launch({
-      args: chromium.args,
+      args: [
+        ...chromium.args,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process', // <- this one doesn't works in Windows
+        '--disable-gpu'
+      ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
@@ -56,19 +66,22 @@ export async function GET(
       waitUntil: 'networkidle0',
     });
 
-    // 4. Generamos el PDF (Versión Simple)
-    // Confiamos en el CSS (position:fixed) de la página para el fondo.
+    // 4. Generamos el PDF con configuración mejorada
     const pdfBuffer = await page.pdf({
       format: 'Letter',       // Tamaño Carta
       printBackground: true,  // ¡Imprime el fondo!
       
-      // Dejamos que el CSS de la página controle los márgenes
+      // Configuramos márgenes para asegurar espaciado consistente
       margin: {
-        top: '0px',
-        right: '0px',
-        bottom: '0px',
-        left: '0px',
+        top: '0cm',
+        right: '0cm',
+        bottom: '0cm',
+        left: '0cm',
       },
+      
+      // Opciones adicionales para mejorar el renderizado
+      displayHeaderFooter: false,
+      preferCSSPageSize: true,
     });
 
     // 5. Cerramos el robot

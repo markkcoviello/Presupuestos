@@ -1,8 +1,6 @@
 /* --- Estilos COMPLETOS y CORREGIDOS para reporte.module.css --- */
 
-/* 1. EL FONDO (LA PLANTILLA)
-  position: fixed la hace una "marca de agua" que se repite en CADA página.
-*/
+/* 1. EL FONDO (LA PLANTILLA) */
 .background {
   position: fixed; 
   top: 0;
@@ -13,10 +11,7 @@
   object-fit: cover;
 }
 
-/* 2. EL CONTENEDOR DE LA PÁGINA (EL ÁREA DE ESCRITURA)
-  Aquí es donde definimos TUS MÁRGENES. Estos se respetarán en
-  la página 1, y la paginación de Chrome los respetará en la página 2.
-*/
+/* 2. EL CONTENEDOR DE LA PÁGINA (EL ÁREA DE ESCRITURA) */
 .reportPage {
   width: 21.59cm;    
   min-height: 27.94cm; /* Permite que crezca a varias páginas */
@@ -24,20 +19,15 @@
   background-color: transparent; /* MUY IMPORTANTE */
   box-sizing: border-box; 
   
-  /* TUS MÁRGENES DE ESCRITURA
-     Sintaxis: [arriba] [lados] [abajo]
-     Estos son los márgenes que te gustaban y que perdimos.
-  */
-  padding: 3.5cm 2cm 4cm; 
+  /* Aumentamos los márgenes para evitar el encimado */
+  padding: 4cm 2cm 5cm; /* Aumentado de 3.5cm a 4cm arriba y de 4cm a 5cm abajo */
   
   /* Esto es solo para la vista en navegador */
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-/* 3. EL CONTENIDO (TEXTO)
-  Este div YA NO NECESITA PADDING. Se lo dimos al .reportPage
-*/
+/* 3. EL CONTENIDO (TEXTO) */
 .content {
   position: relative;
   z-index: 2;
@@ -46,7 +36,27 @@
   width: 100%; 
 }
 
-/* --- (A partir de aquí, es tu mismo CSS que ya funcionaba) --- */
+/* --- Añadir estas nuevas clases para control de saltos de página --- */
+.page-break {
+  page-break-before: always;
+}
+
+/* Asegurar que los elementos importantes no se corten */
+.header, .footer, .totals {
+  page-break-inside: avoid;
+}
+
+/* Evitar que las filas de tabla se corten */
+.table tr {
+  page-break-inside: avoid;
+}
+
+/* Controlar saltos de página después de secciones importantes */
+.description {
+  page-break-after: auto;
+}
+
+/* --- (El resto de tu CSS que ya funcionaba) --- */
 
 .label {
   font-weight: bold;
@@ -101,9 +111,6 @@
   border-bottom: 2px solid #000;
   padding-bottom: 8px;
 }
-.table tr {
-  page-break-inside: avoid; 
-}
 .table th:nth-child(3), .table td:nth-child(3),
 .table th:nth-child(4), .table td:nth-child(4),
 .table th:nth-child(5), .table td:nth-child(5),
@@ -122,6 +129,7 @@
   justify-content: flex-end; 
   page-break-before: auto; 
   page-break-inside: avoid; 
+  margin-top: 24px; /* Añadir margen superior para separar de la tabla */
 }
 .totals {
   width: 250px;

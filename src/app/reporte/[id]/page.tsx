@@ -53,7 +53,11 @@ const formatCurrency = (value: number | null | undefined) => {
 export default async function ReportePage({ params }: { params: { id: string } }) {
   const budget = await getBudgetData(params.id) as BudgetData; // Forzamos el tipo
   const concepts = budget.concepts as Concept[];
-
+  
+  // Calcular cuántos conceptos caben en una página (aproximadamente)
+  // Esto nos ayudará a decidir dónde insertar saltos de página
+  const conceptsPerPage = 20; // Ajusta este valor según tus necesidades
+  
   return (
     // 1. ESTE ES EL CONTENEDOR PRINCIPAL QUE TIENE LOS MÁRGENES
     <main className={styles.reportPage}>
@@ -103,23 +107,35 @@ export default async function ReportePage({ params }: { params: { id: string } }
             </tr>
           </thead>
           <tbody>
-            {concepts.map((concept) =>
-              concept.type === 'title' ? (
-                <tr key={concept.id} className={styles.titleRow}>
-                  <td><b>{concept.key}</b></td>
-                  <td colSpan={5}><b>{concept.title}</b></td>
-                </tr>
-              ) : (
-                <tr key={concept.id} className={styles.conceptRow}>
-                  <td>{concept.key}</td>
-                  <td>{concept.description}</td>
-                  <td>{concept.unit}</td>
-                  <td>{concept.quantity}</td>
-                  <td>{formatCurrency(concept.unitPrice)}</td>
-                  <td>{formatCurrency(concept.total)}</td>
-                </tr>
-              )
-            )}
+            {concepts.map((concept, index) => {
+              // Insertar un salto de página después de ciertos conceptos
+              const needsPageBreak = index > 0 && index % conceptsPerPage === 0;
+              
+              return (
+                <React.Fragment key={concept.id}>
+                  {needsPageBreak && (
+                    <tr className={styles.pageBreak}>
+                      <td colSpan={6} style={{height: '0px', padding: '0'}}></td>
+                    </tr>
+                  )}
+                  {concept.type === 'title' ? (
+                    <tr key={concept.id} className={styles.titleRow}>
+                      <td><b>{concept.key}</b></td>
+                      <td colSpan={5}><b>{concept.title}</b></td>
+                    </tr>
+                  ) : (
+                    <tr key={concept.id} className={styles.conceptRow}>
+                      <td>{concept.key}</td>
+                      <td>{concept.description}</td>
+                      <td>{concept.unit}</td>
+                      <td>{concept.quantity}</td>
+                      <td>{formatCurrency(concept.unitPrice)}</td>
+                      <td>{formatCurrency(concept.total)}</td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </tbody>
         </table>
 
