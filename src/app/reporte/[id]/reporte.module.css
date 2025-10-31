@@ -14,15 +14,19 @@
 /* 2. EL CONTENEDOR DE LA PÁGINA (EL ÁREA DE ESCRITURA) */
 .reportPage {
   width: 21.59cm;    
-  /* min-height: 27.94cm; <-- ELIMINA O COMENTA ESTA LÍNEA */
+  /* min-height: 27.94cm; <-- Asegúrate de que esta línea siga comentada o eliminada */
   position: relative;
-  background-color: transparent;
+  background-color: transparent; /* MUY IMPORTANTE */
   box-sizing: border-box; 
   
-  padding: 3.5cm 2cm 5cm; /* Este margen ahora sí se respetará */
+  padding: 3.5cm 2cm 5cm; 
   
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+  /* --- AÑADE ESTAS DOS LÍNEAS TEMPORALMENTE --- */
+  border: 3px solid red; /* Un borde rojo grueso para ver los límites */
+  background-color: rgba(255, 0, 0, 0.1); /* Un fondo rojo muy transparente */
 }
 
 /* 3. EL CONTENIDO (TEXTO) */
