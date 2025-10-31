@@ -21,7 +21,7 @@
   width: 21.59cm;    
   min-height: 27.94cm; 
   position: relative;
-  background-color: white; /* Fondo blanco para la vista en navegador */
+  background-color: transparent; /* Fondo blanco para la vista en navegador */
   box-sizing: border-box; 
   
   /* Esto es solo para la vista en navegador */
@@ -42,7 +42,7 @@
      Estos son tus márgenes de escritura.
      Sintaxis: [arriba] [lados] [abajo]
   */
-  padding: 8cm 2cm 10cm; 
+  padding: 2cm 2cm 12cm; 
 }
 
 .label {
