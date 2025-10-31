@@ -1,12 +1,12 @@
-// --- CÓDIGO CORREGIDO para: src/app/reporte/[id]/page.tsx ---
+// --- CÓDIGO FINAL Y CORREGIDO para: src/app/reporte/[id]/page.tsx ---
 
-import React from 'react'; // <-- ESTA ES LA LÍNEA QUE FALTABA
+import React from 'react';
 import { db } from '@/lib/db'; 
 import { notFound } from 'next/navigation';
-import styles from './reporte.module.css'; // Usaremos este CSS
+import styles from './reporte.module.css';
 import { Budget, Client, Recipient } from '@prisma/client';
 
-/* --- 1. Definimos los tipos de datos --- */
+/* --- 1. Definimos los tipos de datos (sin cambios) --- */
 type Concept = {
   id: string;
   key: string;
@@ -19,13 +19,12 @@ type Concept = {
   total: number;
 };
 
-// Combinamos tipos para que TS no se queje
 type BudgetData = Budget & {
   client: Client;
   recipient: Recipient;
 };
 
-/* --- 2. Función para obtener los datos --- */
+/* --- 2. Función para obtener los datos (sin cambios) --- */
 async function getBudgetData(id: string) {
   const budget = await db.budget.findUnique({
     where: { id: id },
@@ -41,7 +40,7 @@ async function getBudgetData(id: string) {
   return budget;
 }
 
-/* --- 3. Formateador de Moneda --- */
+/* --- 3. Formateador de Moneda (sin cambios) --- */
 const formatCurrency = (value: number | null | undefined) => {
   if (value === null || value === undefined) return '';
   return value.toLocaleString('es-MX', {
@@ -50,30 +49,24 @@ const formatCurrency = (value: number | null | undefined) => {
   });
 };
 
-/* --- 4. El Componente del Reporte (El "Molde") --- */
+/* --- 4. El Componente del Reporte (CON LÓGICA DE SALTO DE PÁGINA MEJORADA) --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
-  const budget = await getBudgetData(params.id) as BudgetData; // Forzamos el tipo
+  const budget = await getBudgetData(params.id) as BudgetData;
   const concepts = budget.concepts as Concept[];
   
-  // Calcular cuántos conceptos caben en una página (aproximadamente)
-  // Esto nos ayudará a decidir dónde insertar saltos de página
-  const conceptsPerPage = 20; // Ajusta este valor según tus necesidades
+  // Ajusta este número según cuántos conceptos quepan en una página.
+  // Es mejor quedarse corto para asegurar que el footer siempre tenga espacio.
+  const conceptsPerPage = 18; 
   
   return (
-    // 1. ESTE ES EL CONTENEDOR PRINCIPAL QUE TIENE LOS MÁRGENES
     <main className={styles.reportPage}>
-
-      {/* 2. ESTA ES LA IMAGEN DE FONDO QUE SE REPETIRÁ */}
       <img 
-        src="/membrete.png" // (Asegúrate que el nombre en /public/ sea correcto)
+        src="/membrete.png"
         className={styles.background} 
         alt="Membrete" 
       />
-
-      {/* 3. ESTE ES TU CONTENIDO, QUE YA NO NECESITA MÁRGENES */}
       <div className={styles.content}>
         
-        {/* --- ENCABEZADO (CLIENTE, FOLIO, FECHA) --- */}
         <header className={styles.header}>
           <div className={styles.atencion}>
             <span className={styles.label}>ATENCIÓN</span>
@@ -90,12 +83,10 @@ export default async function ReportePage({ params }: { params: { id: string } }
           </div>
         </header>
 
-        {/* --- DESCRIPCIÓN --- */}
         <section className={styles.description}>
           <span>{budget.description}</span>
         </section>
 
-        {/* --- TABLA DE CONCEPTOS --- */}
         <table className={styles.table}>
           <thead>
             <tr>
@@ -109,23 +100,24 @@ export default async function ReportePage({ params }: { params: { id: string } }
           </thead>
           <tbody>
             {concepts.map((concept, index) => {
-              // Insertar un salto de página después de ciertos conceptos
+              // Determina si esta fila DEBE iniciar una nueva página
               const needsPageBreak = index > 0 && index % conceptsPerPage === 0;
               
+              // Construye las clases para la fila
+              const rowClasses = [
+                concept.type === 'title' ? styles.titleRow : styles.conceptRow,
+                needsPageBreak ? styles.firstRowOnNewPage : '' // Aplica la clase mágica aquí
+              ].filter(Boolean).join(' ');
+
               return (
                 <React.Fragment key={concept.id}>
-                  {needsPageBreak && (
-                    <tr className={styles.pageBreak}>
-                      <td colSpan={6} style={{height: '0px', padding: '0'}}></td>
-                    </tr>
-                  )}
                   {concept.type === 'title' ? (
-                    <tr key={concept.id} className={styles.titleRow}>
+                    <tr className={rowClasses}>
                       <td><b>{concept.key}</b></td>
                       <td colSpan={5}><b>{concept.title}</b></td>
                     </tr>
                   ) : (
-                    <tr key={concept.id} className={styles.conceptRow}>
+                    <tr className={rowClasses}>
                       <td>{concept.key}</td>
                       <td>{concept.description}</td>
                       <td>{concept.unit}</td>
@@ -140,7 +132,6 @@ export default async function ReportePage({ params }: { params: { id: string } }
           </tbody>
         </table>
 
-        {/* --- TOTALES --- */}
         <footer className={styles.footer}>
           <div className={styles.totals}>
             <div>

@@ -1,62 +1,63 @@
-/* --- Estilos COMPLETOS y CORREGIDOS para reporte.module.css --- */
+/* --- Estilos CORREGIDOS Y ROBUSTOS para reporte.module.css --- */
 
-/* 1. EL FONDO (LA PLANTILLA) */
+/* 1. EL FONDO (LA PLANTILLA)
+   Se mantiene igual, es correcto.
+*/
 .background {
   position: fixed; 
   top: 0;
   left: 0;
-  width: 21.59cm;  /* Tamaño exacto de hoja Carta */
-  height: 27.94cm; /* Tamaño exacto de hoja Carta */
-  z-index: -1;     /* Se pone DETRÁS del contenido */
+  width: 21.59cm;
+  height: 27.94cm;
+  z-index: -1;
   object-fit: cover;
 }
 
-/* 2. EL CONTENEDOR DE LA PÁGINA (EL ÁREA DE ESCRITURA) */
+/* 2. EL CONTENEDOR DE LA PÁGINA
+   QUITAMOS el padding de aquí. Su único trabajo es definir el tamaño de la hoja.
+*/
 .reportPage {
   width: 21.59cm;    
-  min-height: 27.94cm; /* Permite que crezca a varias páginas */
+  min-height: 27.94cm;
   position: relative;
-  background-color: transparent; /* MUY IMPORTANTE */
+  background-color: transparent;
   box-sizing: border-box; 
-  
-  /* Aumentamos los márgenes para evitar el encimado */
-  padding: 4cm 2cm 5cm; /* Aumentado de 3.5cm a 4cm arriba y de 4cm a 5cm abajo */
-  
-  /* Esto es solo para la vista en navegador */
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-/* 3. EL CONTENIDO (TEXTO) */
+/* 3. EL CONTENEDOR DEL CONTENIDO
+   AQUÍ es donde ahora aplicamos los márgenes superior e inferior.
+   Este div es el que fluye a través de las páginas.
+*/
 .content {
   position: relative;
   z-index: 2;
   font-family: Arial, sans-serif;
   color: #333;
-  width: 100%; 
+  width: 100%;
+  box-sizing: border-box;
+
+  /* MÁRGENES que se aplican al inicio y al final de todo el contenido */
+  padding-top: 4cm;  /* Margen superior para la primera página */
+  padding-bottom: 5cm; /* Margen inferior para la última página */
 }
 
-/* --- Añadir estas nuevas clases para control de saltos de página --- */
-.page-break {
-  page-break-before: always;
+/* --- NUEVAS CLASES CLAVE PARA CONTROL DE PAGINACIÓN --- */
+
+/* Esta clase se aplicará a la primera fila de una nueva página */
+.firstRowOnNewPage {
+  /* 1. Fuerza un salto de página justo antes de este elemento */
+  page-break-before: always; 
+
+  /* 2. Añade el padding necesario para simular el margen superior de la página */
+  /* Usamos !important para asegurar que sobreescribe otros estilos de celda */
+}
+.firstRowOnNewPage td {
+  padding-top: 4cm !important;
 }
 
-/* Asegurar que los elementos importantes no se corten */
-.header, .footer, .totals {
-  page-break-inside: avoid;
-}
-
-/* Evitar que las filas de tabla se corten */
-.table tr {
-  page-break-inside: avoid;
-}
-
-/* Controlar saltos de página después de secciones importantes */
-.description {
-  page-break-after: auto;
-}
-
-/* --- (El resto de tu CSS que ya funcionaba) --- */
+/* --- (El resto de tu CSS, con ajustes en el footer) --- */
 
 .label {
   font-weight: bold;
@@ -74,7 +75,6 @@
 .atencion {
   max-width: 60%;
 }
-
 .folio {
   text-align: right;
 }
@@ -111,6 +111,9 @@
   border-bottom: 2px solid #000;
   padding-bottom: 8px;
 }
+.table tr {
+  page-break-inside: avoid; 
+}
 .table th:nth-child(3), .table td:nth-child(3),
 .table th:nth-child(4), .table td:nth-child(4),
 .table th:nth-child(5), .table td:nth-child(5),
@@ -124,12 +127,15 @@
   border-bottom: 1px solid #eee;
 }
 
+/* Footer CORREGIDO para evitar traslape */
 .footer {
   display: flex;
   justify-content: flex-end; 
-  page-break-before: auto; 
-  page-break-inside: avoid; 
-  margin-top: 24px; /* Añadir margen superior para separar de la tabla */
+  page-break-inside: avoid; /* Evita que el footer se corte */
+  
+  /* MÁRGENES para proteger el footer */
+  margin-top: 2cm;    /* Espacio extra entre la tabla y los totales */
+  margin-bottom: 5cm; /* ¡CLAVE! Espacio para que no se encime con la imagen de fondo */
 }
 .totals {
   width: 250px;
