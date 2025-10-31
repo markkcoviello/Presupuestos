@@ -1,8 +1,9 @@
-// Código NUEVO para: src/app/api/download-report/[id]/route.ts
+// Código NUEVO y CORREGIDO para: src/app/api/download-report/[id]/route.ts
 
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer';
-import { db } from '@/lib/db'; // 1. IMPORTAMOS LA BASE DE DATOS
+import puppeteer from 'puppeteer-core'; // <--- 1. Cambiado de 'puppeteer' a 'puppeteer-core'
+import chromium from '@sparticuz/chromium'; // <--- 2. Importamos el cromo ligero
+import { db } from '@/lib/db';
 
 export async function GET(
   request: Request,
@@ -10,7 +11,7 @@ export async function GET(
 ) {
   const { id } = params;
 
-  // --- 2. BUSCAMOS EL FOLIO Y LA DESCRIPCIÓN EN LA BD ---
+  // --- Buscamos el folio y la descripción en la BD ---
   const budget = await db.budget.findUnique({
     where: { id: id },
     select: {
@@ -25,53 +26,69 @@ export async function GET(
       headers: { 'Content-Type': 'application/json' },
     });
   }
-  // --- FIN DE LA BÚSQUEDA ---
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
-  
-  const page = await browser.newPage();
+  let browser;
 
-  // Determina la URL base
-const host = process.env.VERCEL_URL
-  ? `presupuestos-seven.vercel.app` // Reemplaza esto con tu URL de Vercel cuando la tengas, o usa VERCEL_URL si es un dominio automático
-  : 'http://localhost:3000';
+  try {
+    // --- 3. Esta es la nueva forma de lanzar el navegador en Vercel ---
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
+    });
+    // --- Fin del nuevo código de lanzamiento ---
 
-const url = `${host}/reporte/${id}`;
-  
-  await page.goto(url, {
-    waitUntil: 'networkidle0',
-  });
+    const page = await browser.newPage();
 
-  const pdfBuffer = await page.pdf({
-    format: 'Letter',
-    printBackground: true,
-    margin: {
-      top: '0px',
-      right: '0px',
-      bottom: '0px',
-      left: '0px',
-    },
-  });
+    // Determinamos la URL base (tu dominio de Vercel)
+    const host = process.env.VERCEL_URL
+      ? `https://presupuestos-seven.vercel.app` // Tu dominio real
+      : 'http://localhost:3000';
+      
+    const url = `${host}/reporte/${id}`;
+    
+    await page.goto(url, {
+      waitUntil: 'networkidle0',
+    });
 
-  await browser.close();
+    const pdfBuffer = await page.pdf({
+      format: 'Letter',
+      printBackground: true,
+      margin: {
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        left: '0px',
+      },
+    });
 
-  // --- 3. CREAMOS EL NUEVO NOMBRE DE ARCHIVO ---
-  // Limpiamos la descripción para que sea un nombre de archivo seguro
-  const sanitizedDescription = (budget.description || 'sin-descripcion')
-    .replace(/[\/\\?%*:|"<>]/g, '-') // Reemplaza caracteres inválidos
-    .substring(0, 50); // Acortamos por si es muy larga
+    // Creamos el nombre del archivo
+    const sanitizedDescription = (budget.description || 'sin-descripcion')
+      .replace(/[\/\\?%*:|"<>]/g, '-')
+      .substring(0, 50);
 
-  const filename = `${budget.folio}-${sanitizedDescription}.pdf`;
-  // --- FIN DE LA CREACIÓN DEL NOMBRE ---
+    const filename = `${budget.folio}-${sanitizedDescription}.pdf`;
 
-  // 4. Enviamos el PDF con el nuevo nombre
-  return new NextResponse(pdfBuffer, {
-    headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="${filename}"`,
-    },
-  });
+    // 4. Enviamos el PDF
+    return new NextResponse(pdfBuffer, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${filename}"`,
+      },
+    });
+
+  } catch (error) {
+    console.error('Error al generar el PDF:', error);
+    return new NextResponse(JSON.stringify({ error: 'Error al generar el PDF' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } finally {
+    // 5. Cerramos el navegador (muy importante)
+    if (browser) {
+      await browser.close();
+    }
+  }
 }
