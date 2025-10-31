@@ -34,7 +34,12 @@ export async function GET(
   
   const page = await browser.newPage();
 
-  const url = `http://localhost:3000/reporte/${id}`;
+  // Determina la URL base
+const host = process.env.VERCEL_URL
+  ? `https://presupuestos.vercel.app` // Reemplaza esto con tu URL de Vercel cuando la tengas, o usa VERCEL_URL si es un dominio automático
+  : 'http://localhost:3000';
+
+const url = `${host}/reporte/${id}`;
   
   await page.goto(url, {
     waitUntil: 'networkidle0',
