@@ -1,0 +1,115 @@
+/* --- Estilos para src/app/reporte/[id]/reporte.module.css --- */
+
+/* Forzamos el tamaño de la página a "Carta" */
+.reportPage {
+  width: 21.59cm;    /* Ancho de hoja Carta (Letter) */
+  height: 27.94cm;   /* Alto de hoja Carta (Letter) */
+  margin: 0;
+  
+  padding: 5cm 2cm 2cm; 
+
+  position: relative;
+  background-color: white; /* Asegura fondo blanco */
+  box-sizing: border-box; /* Importante para el tamaño */
+  /* Quita esto si no quieres que se vea en el navegador, solo en el PDF */
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* La imagen de fondo que ocupa toda la página */
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Detrás del contenido */
+  object-fit: cover;
+}
+
+/* El contenido se imprime encima del fondo */
+.content {
+  position: relative;
+  z-index: 2;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+/* --- Encabezado --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  font-size: 12px;
+}
+.atencion {
+  max-width: 60%;
+}
+.folio {
+  text-align: right;
+}
+
+/* --- Descripción --- */
+.description {
+  margin-bottom: 24px;
+  font-size: 12px;
+}
+
+/* --- Tabla de Conceptos --- */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+  font-size: 11px;
+}
+.table th, .table td {
+  text-align: left;
+  padding: 4px 8px;
+  vertical-align: top;
+}
+.table th {
+  border-bottom: 2px solid #000;
+  padding-bottom: 8px;
+}
+/* Alinear encabezados como en tu ejemplo */
+.table th:nth-child(3), .table td:nth-child(3),
+.table th:nth-child(4), .table td:nth-child(4),
+.table th:nth-child(5), .table td:nth-child(5),
+.table th:nth-child(6), .table td:nth-child(6) {
+  text-align: right;
+}
+
+.titleRow td {
+  padding-top: 10px;
+}
+.conceptRow td {
+  border-bottom: 1px solid #eee;
+}
+
+/* --- Totales --- */
+.footer {
+  display: flex;
+  justify-content: flex-end; /* Alinea los totales a la derecha */
+}
+.totals {
+  width: 250px;
+  font-size: 12px;
+}
+.totals > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid #eee;
+}
+.totals .grandTotal {
+    font-weight: bold;
+  font-size: 14px;
+ }

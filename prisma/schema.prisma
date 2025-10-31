@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -48,7 +48,7 @@ model Recipient {
 model Budget {
   id            String    @id @default(cuid())
   folio         String    @unique
-  userId        String
+  userId        String?
   clientId      String
   recipientId   String
   date          String
@@ -63,5 +63,5 @@ model Budget {
   updatedAt     DateTime  @updatedAt
   recipient     Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   client        Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

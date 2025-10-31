@@ -729,15 +729,15 @@ export default function PresupuestosApp() {
                                   >
                                     <Copy className="h-4 w-4" />
                                   </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => downloadPDF(budget)}
+                                  <a
+                                    href={`/api/download-report/${budget.id}`}
                                     title="Descargar PDF"
-                                    className="hover:bg-red-50 hover:border-red-300"
+                                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 hover:bg-red-50 hover:border-red-300" // <-- Clases de ShadCN/UI para que se vea como botón "outline" "sm" + tus clases hover
+                                    target="_blank"
+                                    download
                                   >
                                     <Download className="h-4 w-4" />
-                                  </Button>
+                                  </a>
                                 </div>
                               </TableCell>
                             </TableRow>
@@ -1097,7 +1097,7 @@ export default function PresupuestosApp() {
                     <div className="text-right">
                       <p className="text-sm text-red-600 mb-1">Folio estimado</p>
                       <p className="text-2xl font-bold text-red-700">
-                        {String(Math.max(...budgets.map(b => parseInt(b.folio) || 0), 0) + 1).padStart(3, '0')}
+                        {String(Math.max(...budgets.map(b => parseInt(b.folio) || 0), 0) + 1).padStart(4, '0')}
                       </p>
                     </div>
                   </div>

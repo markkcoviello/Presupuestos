@@ -24,7 +24,7 @@ async function generateFolio(): Promise<string> {
       nextNumber = highestNumber + 1
     }
     
-    return nextNumber.toString().padStart(3, '0')
+    return nextNumber.toString().padStart(4, '0')
   } catch (error) {
     console.error('Error generating folio:', error)
     // Fallback to timestamp-based folio
@@ -91,8 +91,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    // 1. Se eliminó 'userId' de esta lista.
     const { 
-      userId,
       clientId, 
       recipientId, 
       date, 
@@ -104,7 +104,8 @@ export async function POST(request: NextRequest) {
       total 
     } = body
     
-    if (!userId || !clientId || !recipientId || !date || !concepts || concepts.length === 0) {
+    // 2. Se eliminó la validación de 'userId'.
+    if (!clientId || !recipientId || !date || !concepts || concepts.length === 0) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
     
@@ -114,7 +115,7 @@ export async function POST(request: NextRequest) {
     const budget = await db.budget.create({
       data: {
         folio,
-        userId,
+        // 3. Se eliminó 'userId' de los datos a guardar.
         clientId,
         recipientId,
         date,
