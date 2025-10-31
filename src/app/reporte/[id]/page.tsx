@@ -1,4 +1,4 @@
-// --- CÓDIGO ESTRUCTURALMENTE CORRECTO para: src/app/reporte/[id]/page.tsx ---
+// --- CÓDIGO FINAL Y FLUIDO para: src/app/reporte/[id]/page.tsx ---
 
 import React from 'react';
 import { db } from '@/lib/db'; 
@@ -49,25 +49,19 @@ const formatCurrency = (value: number | null | undefined) => {
   });
 };
 
-/* --- Componente del Reporte con Estructura de Capas --- */
+/* --- Componente del Reporte (Estructura Simple) --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
   const budget = await getBudgetData(params.id) as BudgetData;
   const concepts = budget.concepts as Concept[];
   
   return (
-    // 1. Contenedor Principal (El lienzo de la página)
+    // 1. Un solo contenedor simple. Sin capas, sin posiciones fijas.
     <main className={styles.reportPage}>
       
-      {/* 2. Capa de Fondo (La imagen del membrete) */}
-      <div className={styles.backgroundLayer}>
-        <img 
-          src="/membrete.png"
-          alt="Membrete CONSTRU-FE"
-        />
-      </div>
-
-      {/* 3. Capa de Contenido (El área de escritura con márgenes) */}
-      <div className={styles.contentLayer}>
+      {/* 2. ¡LA IMAGEN DE FONDO ESTÁ GESTIONADA POR CSS! 
+          No necesita estar aquí. */}
+      
+      <div className={styles.content}>
         
         <header className={styles.header}>
           <div className={styles.atencion}>

@@ -1,66 +1,50 @@
-/* --- reporte.module.css - VERSIÓN DEFINITIVA CON POSICIONAMIENTO ABSOLUTO --- */
+/* --- reporte.module.css - VERSIÓN FINAL PARA MULTIPÁGINAS --- */
 
-/* 1. CONFIGURACIÓN DE PÁGINA PARA PUPPETEER
-   Definimos el tamaño del papel y CERO márgenes.
-   Nuestro CSS se encargará de los márgenes reales.
+/* 1. REGLA @PAGE: Define los márgenes para CADA página.
+   ¡Le di el poquito de espacio extra que pediste arriba!
+   Sintaxis: [arriba] [lados] [abajo]
 */
 @page {
+  margin: 4.5cm 2cm 5cm; /* 4.5cm arriba, 2cm lados, 5cm abajo */
   size: Letter;
-  margin: 0cm;
 }
 
-/* 2. EL LIENZO DE LA PÁGINA
-   Este es el contenedor principal. Su tamaño es exacto al de una hoja Carta.
-   position: relative es clave para anclar las capas interiores.
+/* 2. FONDO PARA IMPRESIÓN: La forma correcta de poner un fondo en PDFs.
+   Esto crea una "marca de agua" que se repite en CADA página
+   sin interferir con el flujo del contenido.
+*/
+@media print {
+  body {
+    -webkit-print-color-adjust: exact; /* Fuerza a Chrome a imprimir el fondo */
+    print-color-adjust: exact; /* Versión estándar */
+  }
+  
+  body::before {
+    content: "";
+    position: fixed; /* Fijo en cada página */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Ancho de la ventana de impresión */
+    height: 100vh; /* Alto de la ventana de impresión */
+    background-image: url('/membrete.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1; /* Se queda detrás de todo */
+  }
+}
+
+/* 3. CONTENEDOR PRINCIPAL: ¡Sin altura fija! Dejamos que crezca.
+   Su único trabajo es ser un contenedor.
 */
 .reportPage {
-  position: relative;
-  width: 21.59cm;  /* Ancho exacto de una hoja Carta */
-  height: 27.94cm; /* Alto exacto de una hoja Carta */
-  overflow: hidden; /* Evita que cualquier contenido se salga de los límites */
-}
-
-/* 3. LA CAPA DE FONDO (LA IMAGEN DEL MEMBRETE)
-   Posicionada de forma absoluta para cubrir toda la página.
-   z-index: 1 asegura que está debajo del contenido.
-*/
-.backgroundLayer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.backgroundLayer img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Asegura que la imagen cubra todo sin deformarse */
-  display: block; /* Elimina espacios extra debajo de la imagen */
-}
-
-/* 4. LA CAPA DE CONTENIDO (DONDE VA EL TEXTO Y LAS TABLAS)
-   Esta es la parte más importante. Definimos los márgenes con posicionamiento absoluto.
-   top: 4cm; -> Margen superior
-   left: 2cm; -> Margen izquierdo
-   right: 2cm; -> Margen derecho
-   bottom: 5cm; -> Margen inferior
-   z-index: 2 asegura que está por encima del fondo.
-*/
-.contentLayer {
-  position: absolute;
-  top: 4cm;
-  left: 2cm;
-  right: 2cm;
-  bottom: 5cm;
-  z-index: 2;
-  overflow: auto; /* Permite hacer scroll si el contenido excede el área, aunque el PDF lo paginará */
+  position: relative; /* Necesario para el z-index */
+  background-color: transparent; /* Para que se vea el fondo */
   font-family: Arial, sans-serif;
   color: #333;
 }
 
-/* --- ESTILOS DEL CONTENIDO (sin cambios funcionales, solo para asegurar que estén dentro de .contentLayer) --- */
+/* --- (El resto de tus estilos de contenido se mantiene igual) --- */
 
 .label {
   font-weight: bold;
@@ -103,7 +87,6 @@
   border-collapse: collapse;
   margin-bottom: 24px;
   font-size: 11px;
-  /* page-break-inside: avoid; puede ser problemático, lo quitamos para que el flujo sea natural */
 }
 .table th, .table td {
   text-align: left;
@@ -130,7 +113,7 @@
 .footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 2cm; /* Separación del contenido superior */
+  margin-top: 2cm;
 }
 .totals {
   width: 250px;
