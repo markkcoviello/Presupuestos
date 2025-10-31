@@ -1,53 +1,66 @@
-/* --- reporte.module.css - VERSIÓN FINAL Y ROBUSTA --- */
+/* --- reporte.module.css - VERSIÓN DEFINITIVA CON POSICIONAMIENTO ABSOLUTO --- */
 
-/* 1. REGLA @page: Define los márgenes de CADA página del PDF. */
-@page {
-  margin: 4cm 2cm 5cm; /* 4cm arriba, 2cm lados, 5cm abajo */
-  size: Letter; /* Tamaño Carta */
-}
-
-/* 2. FONDO para IMPRESIÓN: Usamos un pseudo-elemento en el body.
-   Esto es mucho más robusto que un <img> con position: fixed.
-   Se aplicará SOLO cuando se genere el PDF o se imprima la página.
+/* 1. CONFIGURACIÓN DE PÁGINA PARA PUPPETEER
+   Definimos el tamaño del papel y CERO márgenes.
+   Nuestro CSS se encargará de los márgenes reales.
 */
-@media print {
-  body::before {
-    content: "";
-    position: fixed; /* Fijo en cada página */
-    top: 0;
-    left: 0;
-    width: 100vw; /* Usar viewport para cubrir todo */
-    height: 100vh;
-    background-image: url('/membrete.png');
-    background-size: cover; /* Asegura que cubra toda la página */
-    background-position: center;
-    z-index: -1; /* Detrás de todo el contenido */
-    pointer-events: none; /* No interfiere con el contenido */
-  }
+@page {
+  size: Letter;
+  margin: 0cm;
 }
 
-/* 3. Contenedor Principal: Simplificado. Su único trabajo es existir. */
+/* 2. EL LIENZO DE LA PÁGINA
+   Este es el contenedor principal. Su tamaño es exacto al de una hoja Carta.
+   position: relative es clave para anclar las capas interiores.
+*/
 .reportPage {
-  /* El tamaño y los márgenes ahora los controla @page */
   position: relative;
-  background-color: transparent; /* Fondo transparente para que se vea el watermark */
-  box-sizing: border-box;
-  
-  /* Eliminamos estilos que solo sirven para la vista en navegador y pueden interferir */
-  /* width: 21.59cm; <-- Ya no es necesario */
-  /* margin: 0 auto; <-- Ya no es necesario */
-  /* box-shadow: 0 0 10px rgba(0,0,0,0.1); <-- Eliminado, causa problemas en impresión */
+  width: 21.59cm;  /* Ancho exacto de una hoja Carta */
+  height: 27.94cm; /* Alto exacto de una hoja Carta */
+  overflow: hidden; /* Evita que cualquier contenido se salga de los límites */
 }
 
-/* 4. Contenido: También simplificado. */
-.content {
-  position: relative;
-  z-index: 1; /* Encima del fondo */
+/* 3. LA CAPA DE FONDO (LA IMAGEN DEL MEMBRETE)
+   Posicionada de forma absoluta para cubrir toda la página.
+   z-index: 1 asegura que está debajo del contenido.
+*/
+.backgroundLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.backgroundLayer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Asegura que la imagen cubra todo sin deformarse */
+  display: block; /* Elimina espacios extra debajo de la imagen */
+}
+
+/* 4. LA CAPA DE CONTENIDO (DONDE VA EL TEXTO Y LAS TABLAS)
+   Esta es la parte más importante. Definimos los márgenes con posicionamiento absoluto.
+   top: 4cm; -> Margen superior
+   left: 2cm; -> Margen izquierdo
+   right: 2cm; -> Margen derecho
+   bottom: 5cm; -> Margen inferior
+   z-index: 2 asegura que está por encima del fondo.
+*/
+.contentLayer {
+  position: absolute;
+  top: 4cm;
+  left: 2cm;
+  right: 2cm;
+  bottom: 5cm;
+  z-index: 2;
+  overflow: auto; /* Permite hacer scroll si el contenido excede el área, aunque el PDF lo paginará */
   font-family: Arial, sans-serif;
   color: #333;
 }
 
-/* --- (El resto de tus estilos para tablas, headers, etc. se mantiene igual) --- */
+/* --- ESTILOS DEL CONTENIDO (sin cambios funcionales, solo para asegurar que estén dentro de .contentLayer) --- */
 
 .label {
   font-weight: bold;
@@ -90,7 +103,7 @@
   border-collapse: collapse;
   margin-bottom: 24px;
   font-size: 11px;
-  page-break-inside: avoid;
+  /* page-break-inside: avoid; puede ser problemático, lo quitamos para que el flujo sea natural */
 }
 .table th, .table td {
   text-align: left;
@@ -116,9 +129,8 @@
 
 .footer {
   display: flex;
-  justify-content: flex-end; 
-  page-break-inside: avoid;
-  margin-top: 2cm;
+  justify-content: flex-end;
+  margin-top: 2cm; /* Separación del contenido superior */
 }
 .totals {
   width: 250px;

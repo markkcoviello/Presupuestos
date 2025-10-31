@@ -1,11 +1,9 @@
-// --- CÓDIGO FINAL Y COMPLETO para: src/app/api/download-report/[id]/route.ts ---
+// --- CÓDIGO FINAL Y OPTIMIZADO para: src/app/api/download-report/[id]/route.ts ---
 
 import { NextResponse } from 'next/server';
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { db } from '@/lib/db';
-import fs from 'fs';
-import path from 'path';
 
 export async function GET(
   request: Request,
@@ -13,13 +11,9 @@ export async function GET(
 ) {
   const { id } = params;
 
-  // 1. Obtenemos los datos del presupuesto
   const budget = await db.budget.findUnique({
     where: { id: id },
-    select: {
-      folio: true,
-      description: true,
-    },
+    select: { folio: true, description: true },
   });
 
   if (!budget) {
@@ -30,17 +24,12 @@ export async function GET(
   }
 
   let browser;
-
-  // Definimos la URL base (tu dominio de Vercel)
   const host = process.env.VERCEL_URL
-    ? `https://presupuestos-seven.vercel.app` // Tu dominio real
+    ? `https://presupuestos-seven.vercel.app`
     : 'http://localhost:3000';
-    
-  // Esta es la URL de la página "molde" que Puppeteer visitará
   const url = `${host}/reporte/${id}`;
   
   try {
-    // 2. Lanzamos el navegador robot
     browser = await puppeteer.launch({
       args: [
         ...chromium.args,
@@ -50,7 +39,7 @@ export async function GET(
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
         '--no-zygote',
-        '--single-process', // <- this one doesn't works in Windows
+        '--single-process',
         '--disable-gpu'
       ],
       defaultViewport: chromium.defaultViewport,
@@ -60,18 +49,14 @@ export async function GET(
     });
 
     const page = await browser.newPage();
-    
-    // 3. Visitamos la página "molde"
-    await page.goto(url, {
-      waitUntil: 'networkidle0',
-    });
+    await page.goto(url, { waitUntil: 'networkidle0' });
 
-    // 4. Generamos el PDF con configuración mejorada
+    // Generamos el PDF con control total
     const pdfBuffer = await page.pdf({
       format: 'Letter',       // Tamaño Carta
-      printBackground: true,  // ¡Imprime el fondo!
+      printBackground: true,  // ¡Crucial para imprimir la imagen de fondo!
       
-      // Configuramos márgenes para asegurar espaciado consistente
+      // MÁRGENES EN CERO. Nuestro CSS con posicionamiento absoluto lo controla todo.
       margin: {
         top: '0cm',
         right: '0cm',
@@ -79,15 +64,12 @@ export async function GET(
         left: '0cm',
       },
       
-      // Opciones adicionales para mejorar el renderizado
-      displayHeaderFooter: false,
+      // Opciones para un renderizado más nítido
       preferCSSPageSize: true,
     });
 
-    // 5. Cerramos el robot
     await browser.close();
 
-    // 6. Creamos el nombre de archivo (corregido)
     const sanitize = (text: string) => {
       return text
         .normalize('NFD')
@@ -100,7 +82,6 @@ export async function GET(
     const sanitizedFolio = sanitize(budget.folio);
     const filename = `${sanitizedFolio}-${sanitizedDescription}.pdf`;
 
-    // 7. Enviamos el PDF
     return new NextResponse(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
