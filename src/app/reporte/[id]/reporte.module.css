@@ -28,7 +28,7 @@
      Sintaxis: [arriba] [lados] [abajo]
      Estos son los márgenes que te gustaban y que perdimos.
   */
-  padding: 3.5cm 2cm 4cm; 
+  padding: 3.5cm 2cm 5cm; 
   
   /* Esto es solo para la vista en navegador */
   margin: 0 auto;
@@ -137,4 +137,9 @@
   font-weight: bold;
   font-size: 14px;
   border-bottom: none;
+}
+/* Espacio para el salto de página */
+.pageBreakSpacer {
+  height: 3px;
+  page-break-after: always;
 }

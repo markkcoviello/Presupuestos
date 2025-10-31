@@ -140,7 +140,10 @@ export default async function ReportePage({ params }: { params: { id: string } }
             </div>
           </div>
         </footer>
+        {/* Espacio para el salto de página */}
+        <div className={styles.pageBreakSpacer}></div>
       </div>
     </main>
+     
   );
 }
