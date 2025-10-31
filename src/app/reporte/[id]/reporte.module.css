@@ -121,7 +121,9 @@
   display: flex;
   justify-content: flex-end; 
   page-break-before: auto; 
-  page-break-inside: avoid; 
+  page-break-inside: avoid;
+  margin-bottom: 4px; /* Añadir un pequeño margen inferior */
+  page-break-after: always; /* Forzar salto de página después del footer */
 }
 .totals {
   width: 250px;
