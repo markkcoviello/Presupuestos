@@ -1,4 +1,4 @@
-/* --- reporte.module.css - VERSIÓN FINAL CORREGIDA --- */
+/* --- reporte.module.css - VERSIÓN FINAL BASADA EN LA INVESTIGACIÓN --- */
 
 /* 1. REGLA @PAGE: ¡No la tocamos! Es perfecta. */
 @page {
@@ -6,25 +6,26 @@
   size: Letter;
 }
 
-/* 2. LA MARCA DE AGUA (LA IMAGEN DE FONDO) - CORREGIDA
-   Usamos position: fixed, pero con el tamaño EXACTO de la hoja en cm.
-   Esto elimina cualquier ambigüedad de las unidades vw/vh.
+/* 2. LA MARCA DE AGUA (LA IMAGEN DE FONDO) - LA VERDADERA SOLUCIÓN
+   Usamos márgenes negativos para "jalar" la imagen fuera del área de contenido
+   y hacer que cubra la página completa.
 */
 .watermark {
   position: fixed;
-  top: 0;
-  left: 0;
-  /* Tamaño exacto y absoluto de una hoja Carta */
+  /* ¡LA CLAVE! Usamos negativos para compensar los márgenes de @page */
+  top: -4.5cm;  /* Empuja la imagen hacia arriba, fuera del margen superior */
+  left: -2cm;   /* Empuja la imagen hacia la izquierda, fuera del margen izquierdo */
+  
+  /* El tamaño sigue siendo el de la página completa */
   width: 21.59cm; 
   height: 27.94cm;
+  
   z-index: -1; /* Detrás de todo */
-  object-fit: cover; /* Cubre toda el área definida */
+  object-fit: cover; /* Asegura que cubra todo */
   pointer-events: none; /* No interfiere */
 }
 
-/* 3. CONTENEDOR PRINCIPAL - SIMPLIFICADO
-   Sin altura fija, sin overflow. Solo un contenedor transparente.
-*/
+/* 3. CONTENEDOR PRINCIPAL - SIN CAMBIOS */
 .reportPage {
   position: relative;
   background-color: transparent;
@@ -32,9 +33,7 @@
   color: #333;
 }
 
-/* 4. CONTENIDO - SIN ESTILOS DE MARGEN
-   El contenido fluye libremente, @page se encarga de los márgenes.
-*/
+/* 4. CONTENIDO - SIN CAMBIOS */
 .content {
   /* No necesita nada aquí */
 }
