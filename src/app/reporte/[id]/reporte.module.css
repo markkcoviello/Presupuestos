@@ -13,20 +13,18 @@
 
 /* 2. EL CONTENEDOR DE LA PÁGINA (EL ÁREA DE ESCRITURA) */
 .reportPage {
-  width: 21.59cm;    
-  /* min-height: 27.94cm; <-- Asegúrate de que esta línea siga comentada o eliminada */
-  position: relative;
-  background-color: transparent; /* MUY IMPORTANTE */
+  /* width: 21.59cm; <-- Quita esto */
+  /* min-height: 27.94cm; <-- Asegúrate que esto no exista */
+  /* position: relative; <-- Quita esto */
+  background-color: transparent;
   box-sizing: border-box; 
   
-  padding: 3.5cm 2cm 5cm; 
+  /* El padding ahora va en el contenido */
+  /* padding: 3.5cm 2cm 5cm; <-- Mueve esto a .content */
   
-  margin: 0 auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-
-  /* --- AÑADE ESTAS DOS LÍNEAS TEMPORALMENTE --- */
-  border: 3px solid red; /* Un borde rojo grueso para ver los límites */
-  background-color: rgba(255, 0, 0, 0.1); /* Un fondo rojo muy transparente */
+  /* El margin y box-shadow ya no son necesarios aquí */
+  /* margin: 0 auto; */
+  /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
 }
 
 /* 3. EL CONTENIDO (TEXTO) */
@@ -35,7 +33,13 @@
   z-index: 2;
   font-family: Arial, sans-serif;
   color: #333;
-  width: 100%; 
+  
+  /* --- ESTAS SON LAS NUEVAS PROPIEDADES CLAVE --- */
+  width: 21.59cm;  /* El ancho de la página */
+  min-height: 27.94cm; /* La altura mínima para que el fondo se vea bien */
+  padding: 3.5cm 2cm 5cm; /* ¡TUS MÁRGENES AQUÍ! */
+  margin: 0 auto; /* Esto centra el contenido en la página */
+  box-sizing: border-box;
 }
 
 /* --- Estilos para los elementos --- */
