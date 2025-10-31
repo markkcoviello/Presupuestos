@@ -1,50 +1,51 @@
-/* --- reporte.module.css - VERSIÓN FINAL PARA MULTIPÁGINAS --- */
+/* --- reporte.module.css - VERSIÓN AUDITADA Y DEFINITIVA --- */
 
-/* 1. REGLA @PAGE: Define los márgenes para CADA página.
-   ¡Le di el poquito de espacio extra que pediste arriba!
-   Sintaxis: [arriba] [lados] [abajo]
+/* 1. CONFIGURACIÓN DE PÁGINA PARA PUPPETEER
+   Esto es lo más importante. Define los márgenes de CADA página.
+   Le di el poquito de espacio extra que pediste arriba: 4.5cm.
+   Sintaxis: [arriba] [derecha] [abajo] [izquierda]
 */
 @page {
-  margin: 4.5cm 2cm 5cm; /* 4.5cm arriba, 2cm lados, 5cm abajo */
+  margin: 4.5cm 2cm 5cm;
   size: Letter;
 }
 
-/* 2. FONDO PARA IMPRESIÓN: La forma correcta de poner un fondo en PDFs.
-   Esto crea una "marca de agua" que se repite en CADA página
-   sin interferir con el flujo del contenido.
+/* 2. LA MARCA DE AGUA (LA IMAGEN DE FONDO)
+   Esta es la forma correcta y robusta de poner un fondo que se repite.
+   position: fixed en modo de impresión se ancla a CADA PÁGINA.
 */
-@media print {
-  body {
-    -webkit-print-color-adjust: exact; /* Fuerza a Chrome a imprimir el fondo */
-    print-color-adjust: exact; /* Versión estándar */
-  }
-  
-  body::before {
-    content: "";
-    position: fixed; /* Fijo en cada página */
-    top: 0;
-    left: 0;
-    width: 100vw; /* Ancho de la ventana de impresión */
-    height: 100vh; /* Alto de la ventana de impresión */
-    background-image: url('/membrete.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: -1; /* Se queda detrás de todo */
-  }
+.watermark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* Usamos el viewport de impresión para cubrir la página entera */
+  width: 100vw; 
+  height: 100vh;
+  z-index: -1; /* Se asegura de que esté detrás de todo el contenido */
+  object-fit: cover; /* La imagen cubre toda la página sin deformarse */
+  pointer-events: none; /* Evita que interfiera con cualquier interacción */
 }
 
-/* 3. CONTENEDOR PRINCIPAL: ¡Sin altura fija! Dejamos que crezca.
-   Su único trabajo es ser un contenedor.
+/* 3. CONTENEDOR PRINCIPAL
+   ¡MUY IMPORTANTE! Sin altura fija, sin overflow.
+   Es solo un contenedor que permite que su contenido fluya naturalmente.
 */
 .reportPage {
-  position: relative; /* Necesario para el z-index */
-  background-color: transparent; /* Para que se vea el fondo */
+  position: relative; /* Necesario para que el z-index del watermark funcione */
+  background-color: transparent; /* Fondo transparente para ver la imagen */
   font-family: Arial, sans-serif;
   color: #333;
 }
 
-/* --- (El resto de tus estilos de contenido se mantiene igual) --- */
+/* 4. CONTENIDO
+   Este div contiene todo tu texto y tablas.
+   Permanece en el flujo normal del documento, lo que permite la paginación.
+*/
+.content {
+  /* No necesita posicionamiento ni márgenes. @page se encarga de todo. */
+}
+
+/* --- ESTILOS DEL CONTENIDO (sin cambios funcionales) --- */
 
 .label {
   font-weight: bold;
@@ -87,6 +88,7 @@
   border-collapse: collapse;
   margin-bottom: 24px;
   font-size: 11px;
+  /* page-break-inside: avoid; puede ser problemático, lo quitamos para que el flujo sea natural */
 }
 .table th, .table td {
   text-align: left;
