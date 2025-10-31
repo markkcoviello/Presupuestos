@@ -36,7 +36,7 @@ export async function GET(
 
   // Determina la URL base
 const host = process.env.VERCEL_URL
-  ? `https://presupuestos.vercel.app` // Reemplaza esto con tu URL de Vercel cuando la tengas, o usa VERCEL_URL si es un dominio automático
+  ? `presupuestos-seven.vercel.app` // Reemplaza esto con tu URL de Vercel cuando la tengas, o usa VERCEL_URL si es un dominio automático
   : 'http://localhost:3000';
 
 const url = `${host}/reporte/${id}`;
