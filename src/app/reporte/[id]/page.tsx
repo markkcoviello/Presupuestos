@@ -1,4 +1,4 @@
-// --- CÓDIGO FINAL Y CORREGIDO para: src/app/reporte/[id]/page.tsx ---
+// --- CÓDIGO SIMPLIFICADO Y CORREGIDO para: src/app/reporte/[id]/page.tsx ---
 
 import React from 'react';
 import { db } from '@/lib/db'; 
@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import styles from './reporte.module.css';
 import { Budget, Client, Recipient } from '@prisma/client';
 
-/* --- 1. Definimos los tipos de datos (sin cambios) --- */
+/* --- Tipos de datos (sin cambios) --- */
 type Concept = {
   id: string;
   key: string;
@@ -24,7 +24,7 @@ type BudgetData = Budget & {
   recipient: Recipient;
 };
 
-/* --- 2. Función para obtener los datos (sin cambios) --- */
+/* --- Función para obtener los datos (sin cambios) --- */
 async function getBudgetData(id: string) {
   const budget = await db.budget.findUnique({
     where: { id: id },
@@ -40,7 +40,7 @@ async function getBudgetData(id: string) {
   return budget;
 }
 
-/* --- 3. Formateador de Moneda (sin cambios) --- */
+/* --- Formateador de Moneda (sin cambios) --- */
 const formatCurrency = (value: number | null | undefined) => {
   if (value === null || value === undefined) return '';
   return value.toLocaleString('es-MX', {
@@ -49,14 +49,13 @@ const formatCurrency = (value: number | null | undefined) => {
   });
 };
 
-/* --- 4. El Componente del Reporte (CON LÓGICA DE SALTO DE PÁGINA MEJORADA) --- */
+/* --- 4. El Componente del Reporte (SIMPLIFICADO) --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
   const budget = await getBudgetData(params.id) as BudgetData;
   const concepts = budget.concepts as Concept[];
   
-  // Ajusta este número según cuántos conceptos quepan en una página.
-  // Es mejor quedarse corto para asegurar que el footer siempre tenga espacio.
-  const conceptsPerPage = 18; 
+  // ¡YA NO NECESITAMOS LA LÓGICA DE SALTO DE PÁGINA!
+  // El motor de PDF lo hará automáticamente gracias a @page.
   
   return (
     <main className={styles.reportPage}>
@@ -99,36 +98,26 @@ export default async function ReportePage({ params }: { params: { id: string } }
             </tr>
           </thead>
           <tbody>
-            {concepts.map((concept, index) => {
-              // Determina si esta fila DEBE iniciar una nueva página
-              const needsPageBreak = index > 0 && index % conceptsPerPage === 0;
-              
-              // Construye las clases para la fila
-              const rowClasses = [
-                concept.type === 'title' ? styles.titleRow : styles.conceptRow,
-                needsPageBreak ? styles.firstRowOnNewPage : '' // Aplica la clase mágica aquí
-              ].filter(Boolean).join(' ');
-
-              return (
-                <React.Fragment key={concept.id}>
-                  {concept.type === 'title' ? (
-                    <tr className={rowClasses}>
-                      <td><b>{concept.key}</b></td>
-                      <td colSpan={5}><b>{concept.title}</b></td>
-                    </tr>
-                  ) : (
-                    <tr className={rowClasses}>
-                      <td>{concept.key}</td>
-                      <td>{concept.description}</td>
-                      <td>{concept.unit}</td>
-                      <td>{concept.quantity}</td>
-                      <td>{formatCurrency(concept.unitPrice)}</td>
-                      <td>{formatCurrency(concept.total)}</td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              );
-            })}
+            {/* Simplemente mapeamos los conceptos. Sin lógica extra. */}
+            {concepts.map((concept) => (
+              <React.Fragment key={concept.id}>
+                {concept.type === 'title' ? (
+                  <tr className={styles.titleRow}>
+                    <td><b>{concept.key}</b></td>
+                    <td colSpan={5}><b>{concept.title}</b></td>
+                  </tr>
+                ) : (
+                  <tr className={styles.conceptRow}>
+                    <td>{concept.key}</td>
+                    <td>{concept.description}</td>
+                    <td>{concept.unit}</td>
+                    <td>{concept.quantity}</td>
+                    <td>{formatCurrency(concept.unitPrice)}</td>
+                    <td>{formatCurrency(concept.total)}</td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
           </tbody>
         </table>
 

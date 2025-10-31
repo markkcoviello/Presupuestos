@@ -1,7 +1,17 @@
-/* --- Estilos CORREGIDOS Y ROBUSTOS para reporte.module.css --- */
+/* --- reporte.module.css - VERSIÓN DEFINITIVA Y CORREGIDA --- */
 
-/* 1. EL FONDO (LA PLANTILLA)
-   Se mantiene igual, es correcto.
+/* 1. LA REGLA CLAVE: @page
+   Define los márgenes para CADA página del PDF.
+   Sintaxis: [arriba] [derecha] [abajo] [izquierda]
+   Esto reemplaza todo el padding que teníamos antes.
+*/
+@page {
+  margin: 4cm 2cm 5cm; /* 4cm arriba, 2cm lados, 5cm abajo */
+  size: Letter; /* Asegura que el tamaño de página sea Carta */
+}
+
+/* 2. EL FONDO (LA PLANTILLA)
+   Se mantiene igual. Ahora se posicionará sobre los márgenes definidos por @page.
 */
 .background {
   position: fixed; 
@@ -13,22 +23,22 @@
   object-fit: cover;
 }
 
-/* 2. EL CONTENEDOR DE LA PÁGINA
-   QUITAMOS el padding de aquí. Su único trabajo es definir el tamaño de la hoja.
+/* 3. EL CONTENEDOR DE LA PÁGINA
+   QUITAMOS todo el padding y los márgenes. Su único trabajo es definir el tamaño.
+   El flujo de contenido y los márgenes ahora los controla @page.
 */
 .reportPage {
   width: 21.59cm;    
-  min-height: 27.94cm;
+  /* No necesitamos min-height, el contenido fluirá naturalmente */
   position: relative;
   background-color: transparent;
   box-sizing: border-box; 
-  margin: 0 auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 0 auto; /* Solo para centrar en la vista previa del navegador */
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Solo para vista previa */
 }
 
-/* 3. EL CONTENEDOR DEL CONTENIDO
-   AQUÍ es donde ahora aplicamos los márgenes superior e inferior.
-   Este div es el que fluye a través de las páginas.
+/* 4. EL CONTENIDO
+   Ya no necesita padding. Los márgenes los define @page.
 */
 .content {
   position: relative;
@@ -37,27 +47,14 @@
   color: #333;
   width: 100%;
   box-sizing: border-box;
-
-  /* MÁRGENES que se aplican al inicio y al final de todo el contenido */
-  padding-top: 4cm;  /* Margen superior para la primera página */
-  padding-bottom: 5cm; /* Margen inferior para la última página */
 }
 
-/* --- NUEVAS CLASES CLAVE PARA CONTROL DE PAGINACIÓN --- */
+/* --- ELIMINAMOS LAS CLASES DE SALTO DE PÁGINA MANUAL ---
+   Ya no son necesarias. El motor de PDF se encargará de los saltos
+   cuando el contenido rebase el área definida por los márgenes de @page.
+*/
 
-/* Esta clase se aplicará a la primera fila de una nueva página */
-.firstRowOnNewPage {
-  /* 1. Fuerza un salto de página justo antes de este elemento */
-  page-break-before: always; 
-
-  /* 2. Añade el padding necesario para simular el margen superior de la página */
-  /* Usamos !important para asegurar que sobreescribe otros estilos de celda */
-}
-.firstRowOnNewPage td {
-  padding-top: 4cm !important;
-}
-
-/* --- (El resto de tu CSS, con ajustes en el footer) --- */
+/* --- (El resto de tu CSS, simplificado) --- */
 
 .label {
   font-weight: bold;
@@ -100,7 +97,7 @@
   border-collapse: collapse;
   margin-bottom: 24px;
   font-size: 11px;
-  page-break-inside: auto; 
+  page-break-inside: avoid; /* Evita que una fila se corte a mitad */
 }
 .table th, .table td {
   text-align: left;
@@ -110,9 +107,6 @@
 .table th {
   border-bottom: 2px solid #000;
   padding-bottom: 8px;
-}
-.table tr {
-  page-break-inside: avoid; 
 }
 .table th:nth-child(3), .table td:nth-child(3),
 .table th:nth-child(4), .table td:nth-child(4),
@@ -127,15 +121,12 @@
   border-bottom: 1px solid #eee;
 }
 
-/* Footer CORREGIDO para evitar traslape */
+/* Footer simplificado. @page se encarga del margen inferior. */
 .footer {
   display: flex;
   justify-content: flex-end; 
   page-break-inside: avoid; /* Evita que el footer se corte */
-  
-  /* MÁRGENES para proteger el footer */
-  margin-top: 2cm;    /* Espacio extra entre la tabla y los totales */
-  margin-bottom: 5cm; /* ¡CLAVE! Espacio para que no se encime con la imagen de fondo */
+  margin-top: 2cm; /* Solo un pequeño margen superior para separar de la tabla */
 }
 .totals {
   width: 250px;
