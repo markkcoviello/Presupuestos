@@ -5,12 +5,12 @@
   y se repita en CADA página que imprima Puppeteer.
 */
 .background {
-  position: fixed; 
+  position: fixed; /* <-- ¡EL CAMBIO CLAVE! */
   top: 0;
   left: 0;
-  width: 21.59cm;  /* Tamaño exacto de hoja Carta */
-  height: 27.94cm; /* Tamaño exacto de hoja Carta */
-  z-index: -1;     /* Se pone DETRÁS del contenido */
+  width: 21.59cm;  /* Tamaño exacto de la página */
+  height: 27.94cm; /* Tamaño exacto de la página */
+  z-index: -1;     /* La ponemos DETRÁS de todo el contenido */
   object-fit: cover;
 }
 
@@ -18,11 +18,16 @@
   Este es el "área de escritura" de tu contenido.
 */
 .reportPage {
-  width: 21.59cm;    
-  min-height: 27.94cm; 
+  width: 21.59cm;    /* Ancho de hoja Carta */
+  min-height: 27.94cm; /* Permite que el contenido crezca a varias páginas */
   position: relative;
-  background-color: transparent; /* Fondo blanco para la vista en navegador */
+  background-color: transparent; /* Hacemos el contenedor transparente */
   box-sizing: border-box; 
+  
+  /* ESTOS SON LOS MÁRGENES DE ESCRITURA */
+  /* Le damos espacio al contenido para que no choque con el fondo */
+  /* Sintaxis: [arriba] [lados] [abajo] */
+  padding: 3cm 2cm 4cm; 
   
   /* Esto es solo para la vista en navegador */
   margin: 0 auto;
