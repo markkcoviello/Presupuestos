@@ -2,19 +2,33 @@
 
 /* Forzamos el tamaño de la página a "Carta" */
 .reportPage {
-  width: 21.59cm;    /* Ancho de hoja Carta (Letter) */
-  height: 27.94cm;   /* Alto de hoja Carta (Letter) */
+  width: 21.59cm;         /* Ancho de hoja Carta (Letter) */
+  
+  /* --- CAMBIO --- */
+  /* Quitamos la altura fija (height) y solo dejamos una altura mínima (min-height) */
+  /* Esto permite que el contenido crezca y ocupe varias páginas. */
+  min-height: 27.94cm;
+  
   margin: 0;
   
-  padding: 5cm 2cm 2cm; 
-
+  /* --- CAMBIO --- */
+  /* Aumentamos el padding inferior (el tercer valor) a 4cm. */
+  /* Esto crea el "límite" en la parte de abajo para que no se encime. */
+  /* Sintaxis: [arriba] [lados] [abajo] */
+  padding: 3cm 2cm 4cm;
+  
   position: relative;
-  background-color: white; /* Asegura fondo blanco */
-  box-sizing: border-box; /* Importante para el tamaño */
-  /* Quita esto si no quieres que se vea en el navegador, solo en el PDF */
+  background-color: white; 
+  box-sizing: border-box; 
   margin-left: auto;
   margin-right: auto;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+  /* --- CÓDIGO NUEVO --- */
+  /* Aplicamos el fondo con CSS para que Puppeteer lo repita en CADA página */
+  background-image: url("/membrete.png"); /* (Asegúrate que el nombre sea correcto) */
+  background-size: 21.59cm 27.94cm; /* Forzar a tamaño de página */
+  background-repeat: no-repeat;
 }
 
 /* La imagen de fondo que ocupa toda la página */

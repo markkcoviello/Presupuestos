@@ -53,11 +53,7 @@ export default async function ReportePage({ params }: { params: { id: string } }
       {/* Asegúrate de poner tu imagen "Hoja membretada" 
         en la carpeta "public/" de tu proyecto.
       */}
-      <img 
-        src="/membrete.png" // Ajusta este nombre si es diferente
-        className={styles.background} 
-        alt="Membrete" 
-      />
+      
 
       <div className={styles.content}>
         {/* --- ENCABEZADO (CLIENTE, FOLIO, FECHA) --- */}
