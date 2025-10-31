@@ -130,3 +130,12 @@
   font-size: 14px;
   border-bottom: none;
 }
+/* --- reporte.module.css --- */
+
+/* ... (todo tu CSS actual se mantiene igual) ... */
+
+/* Espaciador para forzar el margen inferior en la última página */
+.pageBottomSpacer {
+  height: 3cm; /* <-- AQUÍ CONTROLAS EL ESPACIO QUE QUIERES */
+  width: 100%;
+}
