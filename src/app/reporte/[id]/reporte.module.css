@@ -5,74 +5,46 @@
   y se repita en CADA página que imprima Puppeteer.
 */
 .background {
-  position: fixed; /* <-- ¡EL CAMBIO CLAVE! */
+  position: fixed; 
   top: 0;
   left: 0;
-  width: 21.59cm;  /* Tamaño exacto de la página */
-  height: 27.94cm; /* Tamaño exacto de la página */
-  z-index: -1;     /* La ponemos DETRÁS de todo el contenido */
+  width: 21.59cm;  /* Tamaño exacto de hoja Carta */
+  height: 27.94cm; /* Tamaño exacto de hoja Carta */
+  z-index: -1;     /* Se pone DETRÁS del contenido */
   object-fit: cover;
 }
 
 /* 2. EL CONTENEDOR DE LA PÁGINA
-  Este es el "área de escritura" de tu contenido.
+  Este contenedor YA NO TIENE PADDING. Es solo un marco.
 */
 .reportPage {
-  width: 21.59cm;    /* Ancho de hoja Carta */
-  min-height: 27.94cm; /* Permite que el contenido crezca a varias páginas */
+  width: 21.59cm;    
+  min-height: 27.94cm; 
   position: relative;
-  background-color: transparent; /* Hacemos el contenedor transparente */
+  background-color: transparent; /* ¡MUY IMPORTANTE! */
   box-sizing: border-box; 
-  
-  /* ESTOS SON LOS MÁRGENES DE ESCRITURA */
-  /* Le damos espacio al contenido para que no choque con el fondo */
-  /* Sintaxis: [arriba] [lados] [abajo] */
-  padding: 3cm 2cm 4cm; 
-  
-  /* Esto es solo para la vista en navegador */
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow: auto; /* Ayuda a la paginación */
 }
 
-/* 3. EL CONTENIDO (TEXTO)
-  Todo el texto va dentro de este div.
+/* 3. EL CONTENIDO (EL TEXTO)
+  AQUÍ APLICAMOS LOS MÁRGENES (padding)
+  Esto SÍ se repetirá en cada página.
 */
 .content {
   position: relative;
   z-index: 2;
   font-family: Arial, sans-serif;
   color: #333;
-  /* ¡Ya no necesitamos padding aquí! La regla @page se encarga. */
+  
+  /* LOS MÁRGENES DE ESCRITURA
+     Sintaxis: [arriba] [lados] [abajo]
+  */
+  padding: 3.5cm 2cm 4cm; 
 }
 
-.label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 4px;
-  font-size: 11px;
-}
-
-/* --- Encabezado --- */
-.header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  font-size: 12px;
-}
-.atencion {
-  max-width: 60%;
-}
-.folio {
-  text-align: right;
-}
-
-/* --- Descripción --- */
-.description {
-  margin-bottom: 24px;
-  font-size: 12px;
-}
-
-/* --- Tabla de Conceptos --- */
+/* 4. REGLAS DE IMPRESIÓN (Para saltos de página) */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -81,55 +53,30 @@
   /* Esto ayuda a que las tablas no se corten feo entre páginas */
   page-break-inside: auto; 
 }
+
 .table th, .table td {
   text-align: left;
   padding: 4px 8px;
   vertical-align: top;
 }
+
 .table th {
   border-bottom: 2px solid #000;
   padding-bottom: 8px;
 }
+
 .table tr {
   /* Evita que una fila se corte a la mitad de una página */
   page-break-inside: avoid; 
 }
 
-/* Alinear encabezados como en tu ejemplo */
-.table th:nth-child(3), .table td:nth-child(3),
-.table th:nth-child(4), .table td:nth-child(4),
-.table th:nth-child(5), .table td:nth-child(5),
-.table th:nth-child(6), .table td:nth-child(6) {
-  text-align: right;
-}
-
-.titleRow td {
-  padding-top: 10px;
-}
-.conceptRow td {
-  border-bottom: 1px solid #eee;
-}
-
-/* --- Totales --- */
 .footer {
   display: flex;
-  justify-content: flex-end; /* Alinea los totales a la derecha */
+  justify-content: flex-end; 
   /* Evita que los totales se separen de la tabla */
   page-break-before: auto; 
   page-break-inside: avoid; 
 }
-.totals {
-  width: 250px;
-  font-size: 12px;
-}
-.totals > div {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
-  border-bottom: 1px solid #eee;
-}
-.totals .grandTotal {
-  font-weight: bold;
-  font-size: 14px;
-  border-bottom: none;
-}
+
+/* --- (El resto de tu CSS para .totals, .header, etc. va aquí) --- */
+/* (Pega aquí el resto de tus clases .atencion, .folio, .totals, etc.) */

@@ -120,18 +120,3 @@
     @apply bg-background text-foreground;
   }
 }
-/* --- INICIA CÓDIGO PARA PDF --- */
-/* Define el tamaño y los márgenes físicos
-  para CADA PÁGINA que se imprima.
-*/
-@page {
-  /* Tamaño de la hoja */
-  size: Letter;
-
-  /* Tus márgenes de "escritura" */
-  margin-top: 4cm;     /* Tu espacio superior */
-  margin-bottom: 4cm;  /* Tu espacio inferior (para el footer) */
-  margin-left: 2cm;    /* Tu espacio izquierdo */
-  margin-right: 2cm;   /* Tu espacio derecho */
-}
-/* --- TERMINA CÓDIGO PARA PDF --- */
