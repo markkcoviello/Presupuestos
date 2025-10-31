@@ -35,41 +35,31 @@ export async function GET(
   const url = `${host}/reporte/${id}`;
   
   try {
-    // Agregamos argumentos estándar para Vercel
-    const browserArgs = [
-      ...chromium.args,
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--single-process'
-    ];
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(),
+    headless: chromium.headless,
+  });
 
-    browser = await puppeteer.launch({
-      args: browserArgs, // Usamos los args modificados
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-      ignoreHTTPSErrors: true,
-    });
+  const page = await browser.newPage();
+  await page.goto(url, { waitUntil: 'networkidle2' });
 
-    const page = await browser.newPage();
-    
-    await page.goto(url, {
-      waitUntil: 'networkidle2', // Cambiado de networkidle0 a networkidle2
-    });
+  const pdfBuffer = await page.pdf({
+    format: 'Letter',
+    printBackground: true,
+    // MÁRGENES EN CERO. Controlamos todo con CSS.
+    margin: {
+      top: '0cm',
+      bottom: '0cm',
+      left: '0cm',
+      right: '0cm',
+    },
+  });
 
-    const pdfBuffer = await page.pdf({
-      format: 'Letter',   
-      printBackground: true, 
-      margin: {
-        top: '0px',
-        right: '0px',
-        bottom: '0px',
-        left: '0px',
-      },
-    });
-
-    await browser.close();
+  await browser.close();
+  // ... (resto del código para devolver el PDF) ...
+} catch (error) { /* ... */ }
 
     const sanitize = (text: string) => {
       return text

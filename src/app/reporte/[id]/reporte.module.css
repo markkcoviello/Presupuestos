@@ -1,141 +1,76 @@
-/* --- reporte.module.css (VERSIÓN FINAL CORREGIDA) --- */
+/* --- reporte.module.css (VERSIÓN LIMPIA Y DEFINITIVA) --- */
 
-/* 1. EL FONDO (LA PLANTILLA) */
-.background {
-  position: fixed; 
-  top: 0;
-  left: 0;
-  width: 21.59cm;
-  height: 27.94cm;
-  z-index: -1;
-  object-fit: cover;
-}
-
-/* 2. EL CONTENEDOR DE LA PÁGINA (VOLVEMOS A DARLE EL CONTROL) */
+/* Estilos para la vista en el navegador (opcional) */
 .reportPage {
-  width: 21.59cm;    
-  min-height: 27.94cm; /* Necesario para que el fondo se muestre bien */
-  position: relative; /* ¡Volvemos a poner esto para el fondo! */
-  background-color: transparent;
-  box-sizing: border-box; 
-  
-  /* MÁRGENES DE ESCRITURA */
-  padding: 3.5cm 2cm 5cm; 
-  
-  /* Para la vista en navegador */
-  margin: 0 auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-
-  /* --- LA LÍNEA MÁGICA QUE LO ARREGLA TODO --- */
-  page-break-inside: auto; /* Le damos permiso al navegador de romper esta caja si el contenido no cabe */
+  width: 21.59cm;
+  margin: 1cm auto;
+  padding: 2cm;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
 }
 
-/* 3. EL CONTENIDO (VUELVE A SER UN CONTENEDOR SIMPLE) */
-.content {
-  position: relative;
-  z-index: 2;
-  font-family: Arial, sans-serif;
-  color: #333;
-  width: 100%; 
+/* --- ESTILOS CRÍTICOS PARA LA IMPRESIÓN DEL PDF --- */
+@media print {
+  /* 1. EL FONDO: Se repite en cada página como marca de agua */
+  .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 21.59cm; /* Ancho de la hoja Carta */
+    height: 27.94cm; /* Alto de la hoja Carta */
+    z-index: -1;
+  }
+
+  /* 2. LA PÁGINA: El contenedor principal que define los márgenes */
+  .reportPage {
+    width: 21.59cm;
+    min-height: 27.94cm;
+    box-sizing: border-box;
+    /* MÁRGENES DE CONTENIDO: [arriba] [derecha] [abajo] [izquierda] */
+    padding: 3.5cm 2cm 3cm 2cm; /* <-- Ajusta el tercer valor (3cm) a tu gusto */
+    page-break-after: auto; /* Permite que el contenido fluya a la siguiente página */
+  }
+
+  /* 3. EL CONTENIDO: Sin estilos que puedan interferir */
+  .content {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* 4. EL ESPACIADOR: Nuestra solución para el margen inferior final */
+  .pageBottomSpacer {
+    height: 3cm; /* <-- Este es el espacio que se forzará al final */
+    width: 100%;
+  }
+
+  /* Evitar cortes de elementos no deseados */
+  .table tr {
+    page-break-inside: avoid;
+  }
+  .footer {
+    page-break-inside: avoid;
+  }
 }
 
-/* --- (El resto de tu CSS se mantiene igual) --- */
-
-.label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 4px;
-  font-size: 11px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  font-size: 12px;
-}
-.atencion {
-  max-width: 60%;
-}
-.folio {
-  text-align: right;
-}
-.folioLine {
-  font-weight: bold;
-  font-size: 11px;
-}
-.folioLine span:first-child {
-  margin-right: 10px;
-}
-.dateLine {
-  margin-top: 4px;
-  font-size: 12px;
-}
-
-.description {
-  margin-bottom: 24px;
-  font-size: 12px;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 24px;
-  font-size: 11px;
-  page-break-inside: auto; 
-}
-.table th, .table td {
-  text-align: left;
-  padding: 4px 8px;
-  vertical-align: top;
-}
-.table th {
-  border-bottom: 2px solid #000;
-  padding-bottom: 8px;
-}
-.table tr {
-  page-break-inside: avoid; 
-}
+/* --- Estilos de componentes (sin cambios) --- */
+.label { font-weight: bold; display: block; margin-bottom: 4px; font-size: 11px; }
+.header { display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 12px; }
+.atencion { max-width: 60%; }
+.folio { text-align: right; }
+.folioLine { font-weight: bold; font-size: 11px; }
+.folioLine span:first-child { margin-right: 10px; }
+.dateLine { margin-top: 4px; font-size: 12px; }
+.description { margin-bottom: 24px; font-size: 12px; }
+.table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 11px; }
+.table th, .table td { text-align: left; padding: 4px 8px; vertical-align: top; }
+.table th { border-bottom: 2px solid #000; padding-bottom: 8px; }
 .table th:nth-child(3), .table td:nth-child(3),
 .table th:nth-child(4), .table td:nth-child(4),
 .table th:nth-child(5), .table td:nth-child(5),
-.table th:nth-child(6), .table td:nth-child(6) {
-  text-align: right;
-}
-.titleRow td {
-  padding-top: 10px;
-}
-.conceptRow td {
-  border-bottom: 1px solid #eee;
-}
-
-.footer {
-  display: flex;
-  justify-content: flex-end; 
-  page-break-inside: avoid;
-  /* No necesitamos margin-bottom aquí, el padding de .reportPage lo controla todo */
-}
-.totals {
-  width: 250px;
-  font-size: 12px;
-}
-.totals > div {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
-  border-bottom: 1px solid #eee;
-}
-.totals .grandTotal {
-  font-weight: bold;
-  font-size: 14px;
-  border-bottom: none;
-}
-/* --- reporte.module.css --- */
-
-/* ... (todo tu CSS actual se mantiene igual) ... */
-
-/* Espaciador para forzar el margen inferior en la última página */
-.pageBottomSpacer {
-  height: 3cm; /* <-- AQUÍ CONTROLAS EL ESPACIO QUE QUIERES */
-  width: 100%;
-}
+.table th:nth-child(6), .table td:nth-child(6) { text-align: right; }
+.titleRow td { padding-top: 10px; }
+.conceptRow td { border-bottom: 1px solid #eee; }
+.footer { display: flex; justify-content: flex-end; margin-bottom: 0; }
+.totals { width: 250px; font-size: 12px; }
+.totals > div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #eee; }
+.totals .grandTotal { font-weight: bold; font-size: 14px; border-bottom: none; }
