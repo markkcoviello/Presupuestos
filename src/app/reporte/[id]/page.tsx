@@ -1,12 +1,11 @@
-// --- CÓDIGO ESTRUCTURALMENTE CORRECTO para: src/app/reporte/[id]/page.tsx ---
+// --- CÓDIGO FINAL Y COMPLETO para: src/app/reporte/[id]/page.tsx ---
 
-import React from 'react';
 import { db } from '@/lib/db'; 
 import { notFound } from 'next/navigation';
-import styles from './reporte.module.css';
+import styles from './reporte.module.css'; // Usaremos este CSS
 import { Budget, Client, Recipient } from '@prisma/client';
 
-/* --- Tipos de datos (sin cambios) --- */
+/* --- 1. Definimos los tipos de datos --- */
 type Concept = {
   id: string;
   key: string;
@@ -19,12 +18,13 @@ type Concept = {
   total: number;
 };
 
+// Combinamos tipos para que TS no se queje
 type BudgetData = Budget & {
   client: Client;
   recipient: Recipient;
 };
 
-/* --- Función para obtener los datos (sin cambios) --- */
+/* --- 2. Función para obtener los datos --- */
 async function getBudgetData(id: string) {
   const budget = await db.budget.findUnique({
     where: { id: id },
@@ -40,7 +40,7 @@ async function getBudgetData(id: string) {
   return budget;
 }
 
-/* --- Formateador de Moneda (sin cambios) --- */
+/* --- 3. Formateador de Moneda --- */
 const formatCurrency = (value: number | null | undefined) => {
   if (value === null || value === undefined) return '';
   return value.toLocaleString('es-MX', {
@@ -49,25 +49,26 @@ const formatCurrency = (value: number | null | undefined) => {
   });
 };
 
-/* --- Componente del Reporte con Estructura de Capas --- */
+/* --- 4. El Componente del Reporte (El "Molde") --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
-  const budget = await getBudgetData(params.id) as BudgetData;
+  const budget = await getBudgetData(params.id) as BudgetData; // Forzamos el tipo
   const concepts = budget.concepts as Concept[];
-  
+
   return (
-    // 1. Contenedor Principal (El lienzo de la página)
+    // 1. ESTE ES EL CONTENEDOR PRINCIPAL QUE TIENE LOS MÁRGENES
     <main className={styles.reportPage}>
-      
-      {/* 2. La imagen de fondo como "marca de agua" */}
+
+      {/* 2. ESTA ES LA IMAGEN DE FONDO QUE SE REPETIRÁ */}
       <img 
-        src="/membrete.png"
-        alt="Membrete CONSTRU-FE"
-        className={styles.watermark} // <-- ¡CLAVE! Usamos la nueva clase
+        src="/membrete.png" // (Asegúrate que el nombre en /public/ sea correcto)
+        className={styles.background} 
+        alt="Membrete" 
       />
 
-      {/* 3. El contenido que fluye naturalmente */}
+      {/* 3. ESTE ES TU CONTENIDO, QUE YA NO NECESITA MÁRGENES */}
       <div className={styles.content}>
         
+        {/* --- ENCABEZADO (CLIENTE, FOLIO, FECHA) --- */}
         <header className={styles.header}>
           <div className={styles.atencion}>
             <span className={styles.label}>ATENCIÓN</span>
@@ -84,10 +85,12 @@ export default async function ReportePage({ params }: { params: { id: string } }
           </div>
         </header>
 
+        {/* --- DESCRIPCIÓN --- */}
         <section className={styles.description}>
           <span>{budget.description}</span>
         </section>
 
+        {/* --- TABLA DE CONCEPTOS --- */}
         <table className={styles.table}>
           <thead>
             <tr>
@@ -100,28 +103,27 @@ export default async function ReportePage({ params }: { params: { id: string } }
             </tr>
           </thead>
           <tbody>
-            {concepts.map((concept) => (
-              <React.Fragment key={concept.id}>
-                {concept.type === 'title' ? (
-                  <tr className={styles.titleRow}>
-                    <td><b>{concept.key}</b></td>
-                    <td colSpan={5}><b>{concept.title}</b></td>
-                  </tr>
-                ) : (
-                  <tr className={styles.conceptRow}>
-                    <td>{concept.key}</td>
-                    <td>{concept.description}</td>
-                    <td>{concept.unit}</td>
-                    <td>{concept.quantity}</td>
-                    <td>{formatCurrency(concept.unitPrice)}</td>
-                    <td>{formatCurrency(concept.total)}</td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
+            {concepts.map((concept) =>
+              concept.type === 'title' ? (
+                <tr key={concept.id} className={styles.titleRow}>
+                  <td><b>{concept.key}</b></td>
+                  <td colSpan={5}><b>{concept.title}</b></td>
+                </tr>
+              ) : (
+                <tr key={concept.id} className={styles.conceptRow}>
+                  <td>{concept.key}</td>
+                  <td>{concept.description}</td>
+                  <td>{concept.unit}</td>
+                  <td>{concept.quantity}</td>
+                  <td>{formatCurrency(concept.unitPrice)}</td>
+                  <td>{formatCurrency(concept.total)}</td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
 
+        {/* --- TOTALES --- */}
         <footer className={styles.footer}>
           <div className={styles.totals}>
             <div>
