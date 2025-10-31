@@ -1,9 +1,11 @@
-// --- CÓDIGO FINAL Y COMPLETO para: src/app/api/download-report/[id]/route.ts ---
+// --- CÓDIGO FINAL Y COMPLETO (con Base64) para: src/app/api/download-report/[id]/route.ts ---
 
 import { NextResponse } from 'next/server';
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 import { db } from '@/lib/db';
+import fs from 'fs'; // <--- 1. IMPORTAMOS 'File System'
+import path from 'path'; // <--- 2. IMPORTAMOS 'Path'
 
 export async function GET(
   request: Request,
@@ -11,7 +13,7 @@ export async function GET(
 ) {
   const { id } = params;
 
-  // 1. Obtenemos los datos del presupuesto
+  // Obtenemos los datos del presupuesto
   const budget = await db.budget.findUnique({
     where: { id: id },
     select: {
@@ -29,19 +31,28 @@ export async function GET(
 
   let browser;
 
-  // Definimos la URL base (tu dominio de Vercel)
+  // --- 3. LEEMOS LA IMAGEN DEL SERVIDOR ---
+  // (Asegúrate de que tu imagen se llame 'membrete.png' y esté en la carpeta 'public/')
+  const imagePath = path.resolve('./public', 'membrete.png');
+  let imageBase64 = '';
+  try {
+    const imageBuffer = fs.readFileSync(imagePath);
+    // Convertimos la imagen a un string Base64
+    imageBase64 = `data:image/png;base64,${imageBuffer.toString('base64')}`;
+  } catch (error) {
+    console.error("Error leyendo la imagen de fondo:", error);
+    // Si falla, el PDF se generará sin fondo, pero no se "romperá"
+  }
+  // --- FIN DE LA LECTURA DE IMAGEN ---
+
+  // URL de la página "molde" que Puppeteer visitará
   const host = process.env.VERCEL_URL
     ? `https://presupuestos-seven.vercel.app` // Tu dominio real
     : 'http://localhost:3000';
-    
-  // Esta es la URL de la página "molde" que Puppeteer visitará
   const url = `${host}/reporte/${id}`;
-  
-  // Esta es la URL de tu imagen de fondo
-  const backgroundImageUrl = `${host}/membrete.png`; // Asegúrate que el nombre en /public/ sea correcto
 
   try {
-    // 2. Lanzamos el navegador robot
+    // Lanzamos el navegador robot
     browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
@@ -52,53 +63,47 @@ export async function GET(
 
     const page = await browser.newPage();
     
-    // 3. Visitamos la página "molde"
+    // Visitamos la página "molde"
     await page.goto(url, {
       waitUntil: 'networkidle0',
     });
 
-    // 4. ¡LA MAGIA! Creamos la plantilla del fondo
-    // Esta plantilla se inyectará en CADA página.
+    // 4. ¡LA MAGIA! (ACTUALIZADA)
+    // Creamos la plantilla del fondo, ahora con la imagen Base64
     const pageTemplate = `
       <style>
-        html { -webkit-print-color-adjust: exact; } /* Forza la impresión de fondos */
-        body { margin: 0; padding: 0; } /* Quita márgenes por defecto */
+        html { -webkit-print-color-adjust: exact; }
+        body { margin: 0; padding: 0; }
         img.background {
           position: absolute;
           top: 0;
           left: 0;
-          width: 21.59cm;  /* Tamaño Carta */
-          height: 27.94cm; /* Tamaño Carta */
+          width: 21.59cm;
+          height: 27.94cm;
           z-index: -1;
         }
       </style>
-      <img class="background" src="${backgroundImageUrl}" />
-    `;
+      <img class="background" src="${imageBase64}" /> `;
 
-    // 5. Generamos el PDF
+    // 6. Generamos el PDF (MÁRGENES Y FORMATO INTACTOS)
     const pdfBuffer = await page.pdf({
-      format: 'Letter',       // Tamaño Carta
-      printBackground: true,  // Imprime el fondo
-      
-      // --- LA SOLUCIÓN A LOS MÁRGENES ---
-      displayHeaderFooter: true, // ¡Activa la plantilla!
-      headerTemplate: pageTemplate,  // Pone el fondo en el encabezado
-      footerTemplate: "<div></div>", // Pie de página vacío (el fondo ya lo cubre)
-      
-      // Márgenes FÍSICOS del papel.
-      // Aquí definimos tu "área de escritura"
-      margin: {
-        top: '3.5cm',     // Tu margen superior (donde termina el logo)
-        bottom: '4cm',    // Tu margen inferior (donde empieza el footer de la imagen)
+      format: 'Letter',
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: pageTemplate,
+      footerTemplate: "<div></div>",
+      margin: { // TUS MÁRGENES PERFECTOS (NO SE TOCAN)
+        top: '3.5cm',
+        bottom: '4cm',
         left: '2cm',
         right: '2cm',
       },
     });
 
-    // 6. Cerramos el robot
+    // 7. Cerramos el robot
     await browser.close();
 
-    // 7. Creamos el nombre de archivo (corregido)
+    // 8. Creamos el nombre de archivo (corregido)
     const sanitize = (text: string) => {
       return text
         .normalize('NFD')
@@ -111,7 +116,7 @@ export async function GET(
     const sanitizedFolio = sanitize(budget.folio);
     const filename = `${sanitizedFolio}-${sanitizedDescription}.pdf`;
 
-    // 8. Enviamos el PDF
+    // 9. Enviamos el PDF
     return new NextResponse(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
