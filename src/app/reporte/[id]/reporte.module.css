@@ -1,48 +1,46 @@
-/* --- Estilos COMPLETOS y CORREGIDOS para reporte.module.css --- */
+/* --- reporte.module.css (VERSIÓN FINAL CORREGIDA) --- */
 
 /* 1. EL FONDO (LA PLANTILLA) */
 .background {
   position: fixed; 
   top: 0;
   left: 0;
-  width: 21.59cm;  /* Tamaño exacto de hoja Carta */
-  height: 27.94cm; /* Tamaño exacto de hoja Carta */
-  z-index: -1;     /* Se pone DETRÁS del contenido */
+  width: 21.59cm;
+  height: 27.94cm;
+  z-index: -1;
   object-fit: cover;
 }
 
-/* 2. EL CONTENEDOR DE LA PÁGINA (EL ÁREA DE ESCRITURA) */
+/* 2. EL CONTENEDOR DE LA PÁGINA (VOLVEMOS A DARLE EL CONTROL) */
 .reportPage {
-  /* width: 21.59cm; <-- Quita esto */
-  /* min-height: 27.94cm; <-- Asegúrate que esto no exista */
-  /* position: relative; <-- Quita esto */
+  width: 21.59cm;    
+  min-height: 27.94cm; /* Necesario para que el fondo se muestre bien */
+  position: relative; /* ¡Volvemos a poner esto para el fondo! */
   background-color: transparent;
   box-sizing: border-box; 
   
-  /* El padding ahora va en el contenido */
-  /* padding: 3.5cm 2cm 5cm; <-- Mueve esto a .content */
+  /* MÁRGENES DE ESCRITURA */
+  padding: 3.5cm 2cm 5cm; 
   
-  /* El margin y box-shadow ya no son necesarios aquí */
-  /* margin: 0 auto; */
-  /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
+  /* Para la vista en navegador */
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+  /* --- LA LÍNEA MÁGICA QUE LO ARREGLA TODO --- */
+  page-break-inside: auto; /* Le damos permiso al navegador de romper esta caja si el contenido no cabe */
 }
 
-/* 3. EL CONTENIDO (TEXTO) */
+/* 3. EL CONTENIDO (VUELVE A SER UN CONTENEDOR SIMPLE) */
 .content {
   position: relative;
   z-index: 2;
   font-family: Arial, sans-serif;
   color: #333;
-  
-  /* --- ESTAS SON LAS NUEVAS PROPIEDADES CLAVE --- */
-  width: 21.59cm;  /* El ancho de la página */
-  min-height: 27.94cm; /* La altura mínima para que el fondo se vea bien */
-  padding: 3.5cm 2cm 5cm; /* ¡TUS MÁRGENES AQUÍ! */
-  margin: 0 auto; /* Esto centra el contenido en la página */
-  box-sizing: border-box;
+  width: 100%; 
 }
 
-/* --- Estilos para los elementos --- */
+/* --- (El resto de tu CSS se mantiene igual) --- */
+
 .label {
   font-weight: bold;
   display: block;
@@ -56,24 +54,19 @@
   margin-bottom: 24px;
   font-size: 12px;
 }
-
 .atencion {
   max-width: 60%;
 }
-
 .folio {
   text-align: right;
 }
-
 .folioLine {
   font-weight: bold;
   font-size: 11px;
 }
-
 .folioLine span:first-child {
   margin-right: 10px;
 }
-
 .dateLine {
   margin-top: 4px;
   font-size: 12px;
@@ -91,33 +84,27 @@
   font-size: 11px;
   page-break-inside: auto; 
 }
-
 .table th, .table td {
   text-align: left;
   padding: 4px 8px;
   vertical-align: top;
 }
-
 .table th {
   border-bottom: 2px solid #000;
   padding-bottom: 8px;
 }
-
 .table tr {
   page-break-inside: avoid; 
 }
-
 .table th:nth-child(3), .table td:nth-child(3),
 .table th:nth-child(4), .table td:nth-child(4),
 .table th:nth-child(5), .table td:nth-child(5),
 .table th:nth-child(6), .table td:nth-child(6) {
   text-align: right;
 }
-
 .titleRow td {
   padding-top: 10px;
 }
-
 .conceptRow td {
   border-bottom: 1px solid #eee;
 }
@@ -125,27 +112,21 @@
 .footer {
   display: flex;
   justify-content: flex-end; 
-  page-break-before: auto; 
   page-break-inside: avoid;
-  margin-bottom: 4px;
+  /* No necesitamos margin-bottom aquí, el padding de .reportPage lo controla todo */
 }
-
 .totals {
   width: 250px;
   font-size: 12px;
 }
-
 .totals > div {
   display: flex;
   justify-content: space-between;
   padding: 4px 0;
   border-bottom: 1px solid #eee;
 }
-
 .totals .grandTotal {
   font-weight: bold;
   font-size: 14px;
   border-bottom: none;
 }
-
-/* Elimina las clases pageBreakSpacer y page-break-after del footer */
