@@ -1,5 +1,6 @@
-// --- CÓDIGO FINAL Y COMPLETO para: src/app/reporte/[id]/page.tsx ---
+// --- CÓDIGO CORREGIDO para: src/app/reporte/[id]/page.tsx ---
 
+import React from 'react'; // <-- ESTA ES LA LÍNEA QUE FALTABA
 import { db } from '@/lib/db'; 
 import { notFound } from 'next/navigation';
 import styles from './reporte.module.css'; // Usaremos este CSS
