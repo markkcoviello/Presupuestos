@@ -3,7 +3,7 @@
 import { db } from '@/lib/db'; 
 import { notFound } from 'next/navigation';
 import styles from './reporte.module.css'; // Usaremos este CSS
-import { Budget, Client, Recipient } from '@prisma/client'; // Importamos tipos
+import { Budget, Client, Recipient } from '@prisma/client';
 
 /* --- 1. Definimos los tipos de datos --- */
 type Concept = {
