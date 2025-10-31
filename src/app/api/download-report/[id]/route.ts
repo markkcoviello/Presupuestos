@@ -1,8 +1,8 @@
-// Código NUEVO y CORREGIDO para: src/app/api/download-report/[id]/route.ts
+// --- CÓDIGO FINAL Y COMPLETO para: src/app/api/download-report/[id]/route.ts ---
 
 import { NextResponse } from 'next/server';
-import puppeteer from 'puppeteer-core'; // <--- 1. Cambiado de 'puppeteer' a 'puppeteer-core'
-import chromium from '@sparticuz/chromium'; // <--- 2. Importamos el cromo ligero
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { db } from '@/lib/db';
 
 export async function GET(
@@ -11,7 +11,7 @@ export async function GET(
 ) {
   const { id } = params;
 
-  // --- Buscamos el folio y la descripción en la BD ---
+  // 1. Obtenemos los datos del presupuesto
   const budget = await db.budget.findUnique({
     where: { id: id },
     select: {
@@ -29,8 +29,19 @@ export async function GET(
 
   let browser;
 
+  // Definimos la URL base (tu dominio de Vercel)
+  const host = process.env.VERCEL_URL
+    ? `https://presupuestos-seven.vercel.app` // Tu dominio real
+    : 'http://localhost:3000';
+    
+  // Esta es la URL de la página "molde" que Puppeteer visitará
+  const url = `${host}/reporte/${id}`;
+  
+  // Esta es la URL de tu imagen de fondo
+  const backgroundImageUrl = `${host}/membrete.png`; // Asegúrate que el nombre en /public/ sea correcto
+
   try {
-    // --- 3. Esta es la nueva forma de lanzar el navegador en Vercel ---
+    // 2. Lanzamos el navegador robot
     browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
@@ -38,49 +49,69 @@ export async function GET(
       headless: chromium.headless,
       ignoreHTTPSErrors: true,
     });
-    // --- Fin del nuevo código de lanzamiento ---
 
     const page = await browser.newPage();
-
-    // Determinamos la URL base (tu dominio de Vercel)
-    const host = process.env.VERCEL_URL
-      ? `https://presupuestos-seven.vercel.app` // Tu dominio real
-      : 'http://localhost:3000';
-      
-    const url = `${host}/reporte/${id}`;
     
+    // 3. Visitamos la página "molde"
     await page.goto(url, {
       waitUntil: 'networkidle0',
     });
 
+    // 4. ¡LA MAGIA! Creamos la plantilla del fondo
+    // Esta plantilla se inyectará en CADA página.
+    const pageTemplate = `
+      <style>
+        html { -webkit-print-color-adjust: exact; } /* Forza la impresión de fondos */
+        body { margin: 0; padding: 0; } /* Quita márgenes por defecto */
+        img.background {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 21.59cm;  /* Tamaño Carta */
+          height: 27.94cm; /* Tamaño Carta */
+          z-index: -1;
+        }
+      </style>
+      <img class="background" src="${backgroundImageUrl}" />
+    `;
+
+    // 5. Generamos el PDF
     const pdfBuffer = await page.pdf({
-      format: 'Letter',
-      printBackground: true,
+      format: 'Letter',       // Tamaño Carta
+      printBackground: true,  // Imprime el fondo
+      
+      // --- LA SOLUCIÓN A LOS MÁRGENES ---
+      displayHeaderFooter: true, // ¡Activa la plantilla!
+      headerTemplate: pageTemplate,  // Pone el fondo en el encabezado
+      footerTemplate: "<div></div>", // Pie de página vacío (el fondo ya lo cubre)
+      
+      // Márgenes FÍSICOS del papel.
+      // Aquí definimos tu "área de escritura"
       margin: {
-        top: '0px',
-        right: '0px',
-        bottom: '0px',
-        left: '0px',
+        top: '3.5cm',     // Tu margen superior (donde termina el logo)
+        bottom: '4cm',    // Tu margen inferior (donde empieza el footer de la imagen)
+        left: '2cm',
+        right: '2cm',
       },
     });
 
-    // Creamos el nombre del archivo
-    // Función para "sanitiza" un texto para un nombre de archivo
-const sanitize = (text: string) => {
-  return text
-    .normalize('NFD') // Separa acentos de las letras (ej: Í -> I + ´)
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/[^a-zA-Z0-9 .-]/g, '_') // Reemplaza todo lo que no sea letra, número, espacio o guión por un guión bajo
-    .trim() // Quita espacios al inicio o final
-    .substring(0, 50); // Acortamos por si es muy larga
-};
+    // 6. Cerramos el robot
+    await browser.close();
 
-const sanitizedDescription = sanitize(budget.description || 'sin-descripcion');
-const sanitizedFolio = sanitize(budget.folio);
+    // 7. Creamos el nombre de archivo (corregido)
+    const sanitize = (text: string) => {
+      return text
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9 .-]/g, '_')
+        .trim()
+        .substring(0, 50);
+    };
+    const sanitizedDescription = sanitize(budget.description || 'sin-descripcion');
+    const sanitizedFolio = sanitize(budget.folio);
+    const filename = `${sanitizedFolio}-${sanitizedDescription}.pdf`;
 
-const filename = `${sanitizedFolio}-${sanitizedDescription}.pdf`;
-
-    // 4. Enviamos el PDF
+    // 8. Enviamos el PDF
     return new NextResponse(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
@@ -95,7 +126,6 @@ const filename = `${sanitizedFolio}-${sanitizedDescription}.pdf`;
       headers: { 'Content-Type': 'application/json' },
     });
   } finally {
-    // 5. Cerramos el navegador (muy importante)
     if (browser) {
       await browser.close();
     }
