@@ -14,15 +14,13 @@
 /* 2. EL CONTENEDOR DE LA PÁGINA (EL ÁREA DE ESCRITURA) */
 .reportPage {
   width: 21.59cm;    
-  min-height: 27.94cm; /* Permite que crezca a varias páginas */
+  /* min-height: 27.94cm; <-- ELIMINA O COMENTA ESTA LÍNEA */
   position: relative;
   background-color: transparent;
   box-sizing: border-box; 
   
-  /* Márgenes de escritura */
-  padding: 3.5cm 2cm 4cm; /* Ajustado solo ligeramente el margen inferior */
+  padding: 3.5cm 2cm 5cm; /* Este margen ahora sí se respetará */
   
-  /* Esto es solo para la vista en navegador */
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
@@ -119,8 +117,9 @@
 .footer {
   display: flex;
   justify-content: flex-end; 
+  page-break-before: auto; 
   page-break-inside: avoid;
-  margin-bottom: 4cm; /* Espacio antes del final de la página */
+  margin-bottom: 4px;
 }
 
 .totals {
