@@ -1,48 +1,43 @@
-/* --- Estilos para src/app/reporte/[id]/reporte.module.css --- */
+/* --- Estilos COMPLETOS para reporte.module.css --- */
 
-/* Forzamos el tamaño de la página a "Carta" */
-.reportPage {
-  width: 21.59cm;         /* Ancho de hoja Carta (Letter) */
-  
-  /* --- CAMBIO --- */
-  /* Quitamos la altura fija (height) y solo dejamos una altura mínima (min-height) */
-  /* Esto permite que el contenido crezca y ocupe varias páginas. */
-  min-height: 27.94cm;
-  
-  margin: 0;
-  
-  /* --- CAMBIO --- */
-  /* Aumentamos el padding inferior (el tercer valor) a 4cm. */
-  /* Esto crea el "límite" en la parte de abajo para que no se encime. */
-  /* Sintaxis: [arriba] [lados] [abajo] */
-  padding: 3cm 2cm 4cm;
-  
-  position: relative;
-  background-color: white; 
-  box-sizing: border-box; 
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-
-  /* --- CÓDIGO NUEVO --- */
-  /* Aplicamos el fondo con CSS para que Puppeteer lo repita en CADA página */
-  background-image: url("/membrete.png"); /* (Asegúrate que el nombre sea correcto) */
-  background-size: 21.59cm 27.94cm; /* Forzar a tamaño de página */
-  background-repeat: no-repeat;
-}
-
-/* La imagen de fondo que ocupa toda la página */
+/* 1. EL FONDO (LA PLANTILLA)
+  Usamos position:fixed para que actúe como una "marca de agua"
+  y se repita en CADA página que imprima Puppeteer.
+*/
 .background {
-  position: absolute;
+  position: fixed; /* ¡El truco mágico! */
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1; /* Detrás del contenido */
+  width: 21.59cm;  /* Tamaño exacto de hoja Carta */
+  height: 27.94cm; /* Tamaño exacto de hoja Carta */
+  z-index: -1;     /* Se pone DETRÁS del contenido */
   object-fit: cover;
 }
 
-/* El contenido se imprime encima del fondo */
+/* 2. EL CONTENEDOR DE LA PÁGINA
+  Este es el "área de escritura" de tu contenido.
+*/
+.reportPage {
+  width: 21.59cm;    /* Ancho de hoja Carta */
+  min-height: 27.94cm; /* Permite que crezca a varias páginas */
+  position: relative;
+  background-color: transparent; /* El contenedor del texto es transparente */
+  box-sizing: border-box; 
+  
+  /* LOS MÁRGENES DE ESCRITURA
+    Estos "padding" evitan que tu texto choque con el fondo.
+    Sintaxis: [arriba] [lados] [abajo]
+  */
+  padding: 3cm 2cm 4cm; 
+  
+  /* Esto es solo para la vista en navegador */
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* 3. EL CONTENIDO (TEXTO)
+  Todo el texto va dentro de este div.
+*/
 .content {
   position: relative;
   z-index: 2;
@@ -83,6 +78,8 @@
   border-collapse: collapse;
   margin-bottom: 24px;
   font-size: 11px;
+  /* Esto ayuda a que las tablas no se corten feo entre páginas */
+  page-break-inside: auto; 
 }
 .table th, .table td {
   text-align: left;
@@ -93,6 +90,11 @@
   border-bottom: 2px solid #000;
   padding-bottom: 8px;
 }
+.table tr {
+  /* Evita que una fila se corte a la mitad de una página */
+  page-break-inside: avoid; 
+}
+
 /* Alinear encabezados como en tu ejemplo */
 .table th:nth-child(3), .table td:nth-child(3),
 .table th:nth-child(4), .table td:nth-child(4),
@@ -112,6 +114,9 @@
 .footer {
   display: flex;
   justify-content: flex-end; /* Alinea los totales a la derecha */
+  /* Evita que los totales se separen de la tabla */
+  page-break-before: auto; 
+  page-break-inside: avoid; 
 }
 .totals {
   width: 250px;
@@ -124,6 +129,7 @@
   border-bottom: 1px solid #eee;
 }
 .totals .grandTotal {
-    font-weight: bold;
+  font-weight: bold;
   font-size: 14px;
- }
+  border-bottom: none;
+}
