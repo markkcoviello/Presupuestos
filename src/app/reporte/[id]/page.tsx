@@ -1,8 +1,8 @@
-// Código NUEVO Y COMPLETO para: src/app/reporte/[id]/page.tsx
+// Código para: src/app/reporte/[id]/page.tsx
 
-import { db } from '@/lib/db'; 
+import { db } from '@/lib/db'; // Asegúrate que la ruta a tu 'db' sea correcta
 import { notFound } from 'next/navigation';
-import styles from './reporte.module.css'; // Usaremos este CSS
+import styles from './reporte.module.css'; // Crearemos este archivo en el Paso 3
 
 /* --- 1. Definimos los tipos de datos --- */
 type Concept = {
@@ -17,18 +17,18 @@ type Concept = {
   total: number;
 };
 
-/* --- 2. Función para obtener los datos --- */
+/* --- 2. Función para obtener los datos (Enlazamos la BD) --- */
 async function getBudgetData(id: string) {
   const budget = await db.budget.findUnique({
     where: { id: id },
     include: {
-      client: true, 
-      recipient: true,
+      client: true, // Incluimos el cliente
+      recipient: true, // Incluimos el destinatario
     },
   });
 
   if (!budget) {
-    notFound();
+    notFound(); // Si no se encuentra, muestra un 404
   }
   return budget;
 }
@@ -49,38 +49,34 @@ export default async function ReportePage({ params }: { params: { id: string } }
   const concepts = budget.concepts as Concept[];
 
   return (
-    // CONTENEDOR PRINCIPAL
     <main className={styles.reportPage}>
-
-      {/* AQUÍ ESTÁ LA IMAGEN QUE VOLVIMOS A AGREGAR.
-        Está FUERA del div de "content".
+      {/* Asegúrate de poner tu imagen "Hoja membretada" 
+        en la carpeta "public/" de tu proyecto.
       */}
-      <img 
-        src="/membrete.png" // (Asegúrate que el nombre en /public/ sea correcto)
-        className={styles.background} 
-        alt="Membrete" 
-      />
+      
 
-      {/* ESTE DIV ES SÓLO PARA EL CONTENIDO (TEXTO).
-        Tiene el padding para que no choque con los bordes.
-      */}
       <div className={styles.content}>
-        
         {/* --- ENCABEZADO (CLIENTE, FOLIO, FECHA) --- */}
         <header className={styles.header}>
           <div className={styles.atencion}>
             <span className={styles.label}>ATENCIÓN</span>
             <span>{budget.client.name}</span>
           </div>
-          <div className={styles.folio}>
-            <div style={{ fontWeight: 'bold', fontSize: '11px' }}>
-              <span>COTIZACIÓN</span>
-              <span style={{ marginLeft: '10px' }}>{budget.folio}</span>
-            </div>
-            <div style={{ marginTop: '4px', fontSize: '12px' }}>
-              <span>{new Date(budget.date).toLocaleDateString('es-MX', { timeZone: 'UTC' })}</span>
-            </div>
+
+        <div className={styles.folio}>
+
+          {/* Línea 1: Cotización y Folio (en negrita) */}
+          <div style={{ fontWeight: 'bold', fontSize: '11px' }}>
+            <span>COTIZACIÓN</span>
+            <span style={{ marginLeft: '10px' }}>{budget.folio}</span>
           </div>
+
+          {/* Línea 2: Fecha */}
+          <div style={{ marginTop: '4px', fontSize: '12px' }}>
+            <span>{new Date(budget.date).toLocaleDateString('es-MX', { timeZone: 'UTC' })}</span>
+          </div>
+
+        </div>
         </header>
 
         {/* --- DESCRIPCIÓN --- */}

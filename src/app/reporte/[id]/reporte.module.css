@@ -42,7 +42,7 @@
      Estos son tus márgenes de escritura.
      Sintaxis: [arriba] [lados] [abajo]
   */
-  padding: 8cm 2cm 20cm; 
+  padding: 8cm 2cm 10cm; 
 }
 
 .label {
