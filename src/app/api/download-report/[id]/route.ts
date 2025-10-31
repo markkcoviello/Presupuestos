@@ -65,11 +65,20 @@ export async function GET(
     });
 
     // Creamos el nombre del archivo
-    const sanitizedDescription = (budget.description || 'sin-descripcion')
-      .replace(/[\/\\?%*:|"<>]/g, '-')
-      .substring(0, 50);
+    // Función para "sanitiza" un texto para un nombre de archivo
+const sanitize = (text: string) => {
+  return text
+    .normalize('NFD') // Separa acentos de las letras (ej: Í -> I + ´)
+    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
+    .replace(/[^a-zA-Z0-9 .-]/g, '_') // Reemplaza todo lo que no sea letra, número, espacio o guión por un guión bajo
+    .trim() // Quita espacios al inicio o final
+    .substring(0, 50); // Acortamos por si es muy larga
+};
 
-    const filename = `${budget.folio}-${sanitizedDescription}.pdf`;
+const sanitizedDescription = sanitize(budget.description || 'sin-descripcion');
+const sanitizedFolio = sanitize(budget.folio);
+
+const filename = `${sanitizedFolio}-${sanitizedDescription}.pdf`;
 
     // 4. Enviamos el PDF
     return new NextResponse(pdfBuffer, {
