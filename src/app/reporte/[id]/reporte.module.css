@@ -1,31 +1,38 @@
-/* --- reporte.module.css - VERSIÓN FINAL BASADA EN LA INVESTIGACIÓN --- */
+/* --- reporte.module.css - VERSIÓN FINAL CON LIENZO DEFINIDO --- */
 
-/* 1. REGLA @PAGE: ¡No la tocamos! Es perfecta. */
+/* 1. DEFINIMOS EL LIENZO DE LA PÁGINA
+   Esto es crucial. Le decimos al motor de renderizado que el documento
+   tiene el tamaño exacto de una hoja Carta. No hay ambigüedad.
+*/
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 21.59cm;  /* Ancho exacto de la hoja */
+  height: 27.94cm; /* Alto exacto de la hoja */
+}
+
+/* 2. REGLA @PAGE: ¡No la tocamos! Sigue perfecta. */
 @page {
   margin: 4.5cm 2cm 5cm; /* Los márgenes que aprobaste */
   size: Letter;
 }
 
-/* 2. LA MARCA DE AGUA (LA IMAGEN DE FONDO) - LA VERDADERA SOLUCIÓN
-   Usamos márgenes negativos para "jalar" la imagen fuera del área de contenido
-   y hacer que cubra la página completa.
+/* 3. LA MARCA DE AGUA (LA IMAGEN DE FONDO) - SIMPLIFICADA
+   Ahora que el body es del tamaño de la página, position: fixed
+   con width/height 100% funcionará como se espera.
 */
 .watermark {
   position: fixed;
-  /* ¡LA CLAVE! Usamos negativos para compensar los márgenes de @page */
-  top: -4.5cm;  /* Empuja la imagen hacia arriba, fuera del margen superior */
-  left: -2cm;   /* Empuja la imagen hacia la izquierda, fuera del margen izquierdo */
-  
-  /* El tamaño sigue siendo el de la página completa */
-  width: 21.59cm; 
-  height: 27.94cm;
-  
-  z-index: -1; /* Detrás de todo */
-  object-fit: cover; /* Asegura que cubra todo */
-  pointer-events: none; /* No interfiere */
+  top: 0;
+  left: 0;
+  width: 100%; /* Ahora es 100% del body, que es 100% de la página */
+  height: 100%;
+  z-index: -1;
+  object-fit: cover;
+  pointer-events: none;
 }
 
-/* 3. CONTENEDOR PRINCIPAL - SIN CAMBIOS */
+/* 4. CONTENEDOR PRINCIPAL - SIN CAMBIOS */
 .reportPage {
   position: relative;
   background-color: transparent;
@@ -33,7 +40,7 @@
   color: #333;
 }
 
-/* 4. CONTENIDO - SIN CAMBIOS */
+/* 5. CONTENIDO - SIN CAMBIOS */
 .content {
   /* No necesita nada aquí */
 }
