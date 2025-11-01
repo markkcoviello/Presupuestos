@@ -1,4 +1,4 @@
-/* --- src/app/print-styles.css (INTENTO FINAL: FONDO EN HTML) --- */
+/* --- src/app/print-styles.css (PRUEBA FINAL MÍNIMA) --- */
 
 /* --- 1. CONFIGURACIÓN DE PÁGINA (TUS MÁRGENES PERFECTOS) --- */
 @page {
@@ -8,19 +8,15 @@
 
 /* --- 2. ESTILOS GLOBALES PARA LA IMPRESIÓN --- */
 @media print {
-  /* Reseteamos body para que no interfiera */
-  body {
+  html, body {
     margin: 0;
     padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* --- INTENTO FINAL: APLICAMOS EL FONDO DIRECTAMENTE A HTML --- */
+  /* --- PRUEBA: ¿SE VEE ESTE COLOR EN HTML? --- */
   html {
-    margin: 0;
-    padding: 0;
-    background: url('/membrete.png') no-repeat center center fixed;
-    background-size: cover;
-    -webkit-print-color-adjust: exact !important; /* ¡Crucial! */
-    print-color-adjust: exact !important;         /* ¡Crucial! */
+    background: lime !important; /* Un color verde lima muy visible */
   }
 }
