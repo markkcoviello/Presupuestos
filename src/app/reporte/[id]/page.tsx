@@ -6,6 +6,7 @@ import styles from './reporte.module.css';
 import { Budget, Client, Recipient } from '@prisma/client';
 
 /* --- 1. Definimos los tipos de datos --- */
+// El tipo Concept sigue siendo el mismo
 type Concept = {
   id: string;
   key: string;
@@ -18,6 +19,7 @@ type Concept = {
   total: number;
 };
 
+// El tipo BudgetData también sigue siendo el mismo
 type BudgetData = Budget & {
   client: Client;
   recipient: Recipient;
@@ -31,7 +33,7 @@ async function getBudgetData(id: string) {
     include: {
       client: true, 
       recipient: true,
-      concepts: true, // <-- ¡ESTA ES LA LÍNEA CLAVE!
+      // concepts: true, <-- ¡ESTA LÍNEA DEBE SER ELIMINADA!
     },
   });
 
@@ -53,7 +55,7 @@ const formatCurrency = (value: number | null | undefined) => {
 /* --- 4. El Componente del Reporte --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
   const budget = await getBudgetData(params.id) as BudgetData; 
-  const concepts = budget.concepts;
+  const concepts = budget.concepts; // Esto ahora funcionará porque concepts es un campo del objeto 'budget'
 
   return (
     <main className={styles.reportPage}>
