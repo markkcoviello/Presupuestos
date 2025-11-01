@@ -8,8 +8,21 @@ import { Budget, Client, Recipient } from '@prisma/client';
 /* --- (Tus tipos y funciones getBudgetData y formatCurrency se mantienen igual) --- */
 type Concept = { /* ... */ };
 type BudgetData = Budget & { /* ... */ };
-async function getBudgetData(id: string) { /* ... */ }
-const formatCurrency = (value: number | null | undefined) => { /* ... */ };
+async function getBudgetData(id: string) {
+  const budget = await db.budget.findUnique({
+    where: { id: id },
+    include: {
+      client: true, 
+      recipient: true,
+      // NO debe haber 'concepts: true' aquí
+    },
+  });
+
+  if (!budget) {
+    notFound(); // Si no lo encuentra, debería mostrar una página 404
+  }
+  return budget;
+}
 
 export default async function ReportePage({ params }: { params: { id: string } }) {
   const budget = await getBudgetData(params.id) as BudgetData; 
