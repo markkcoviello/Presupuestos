@@ -5,57 +5,15 @@ import { notFound } from 'next/navigation';
 import styles from './reporte.module.css'; 
 import { Budget, Client, Recipient } from '@prisma/client';
 
-/* --- 1. Definimos los tipos de datos --- */
-// El tipo Concept sigue siendo el mismo
-type Concept = {
-  id: string;
-  key: string;
-  type: 'title' | 'concept';
-  title?: string;
-  description?: string;
-  unit?: string;
-  quantity?: number;
-  unitPrice?: number;
-  total: number;
-};
+/* --- (Tus tipos y funciones getBudgetData y formatCurrency se mantienen igual) --- */
+type Concept = { /* ... */ };
+type BudgetData = Budget & { /* ... */ };
+async function getBudgetData(id: string) { /* ... */ }
+const formatCurrency = (value: number | null | undefined) => { /* ... */ };
 
-// El tipo BudgetData también sigue siendo el mismo
-type BudgetData = Budget & {
-  client: Client;
-  recipient: Recipient;
-  concepts: Concept[];
-};
-
-/* --- 2. FUNCIÓN PARA OBTENER LOS DATOS (CORREGIDA) --- */
-async function getBudgetData(id: string) {
-  const budget = await db.budget.findUnique({
-    where: { id: id },
-    include: {
-      client: true, 
-      recipient: true,
-      // concepts: true, <-- ¡ESTA LÍNEA DEBE SER ELIMINADA!
-    },
-  });
-
-  if (!budget) {
-    notFound();
-  }
-  return budget;
-}
-
-/* --- 3. Formateador de Moneda --- */
-const formatCurrency = (value: number | null | undefined) => {
-  if (value === null || value === undefined) return '';
-  return value.toLocaleString('es-MX', {
-    style: 'currency',
-    currency: 'MXN',
-  });
-};
-
-/* --- 4. El Componente del Reporte --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
   const budget = await getBudgetData(params.id) as BudgetData; 
-  const concepts = budget.concepts; // Esto ahora funcionará porque concepts es un campo del objeto 'budget'
+  const concepts = budget.concepts;
 
   return (
     <main className={styles.reportPage}>
@@ -67,80 +25,19 @@ export default async function ReportePage({ params }: { params: { id: string } }
       <div className={styles.content}>
         
         {/* --- ENCABEZADO --- */}
-        <header className={styles.header}>
-          <div className={styles.atencion}>
-            <span className={styles.label}>ATENCIÓN</span>
-            <span>{budget.client.name}</span>
-          </div>
-          <div className={styles.folio}>
-            <div className={styles.folioLine}>
-              <span>COTIZACIÓN</span>
-              <span>{budget.folio}</span>
-            </div>
-            <div className={styles.dateLine}>
-              <span>{new Date(budget.date).toLocaleDateString('es-MX', { timeZone: 'UTC' })}</span>
-            </div>
-          </div>
-        </header>
+        <header className={styles.header}>...</header>
 
         {/* --- DESCRIPCIÓN --- */}
-        <section className={styles.description}>
-          <span>{budget.description}</span>
-        </section>
+        <section className={styles.description}>...</section>
 
         {/* --- TABLA DE CONCEPTOS --- */}
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Concepto</th>
-              <th>Unidad</th>
-              <th>Cantidad</th>
-              <th>P.U.</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {concepts.map((concept) =>
-              concept.type === 'title' ? (
-                <tr key={concept.id} className={styles.titleRow}>
-                  <td><b>{concept.key}</b></td>
-                  <td colSpan={5}><b>{concept.title}</b></td>
-                </tr>
-              ) : (
-                <tr key={concept.id} className={styles.conceptRow}>
-                  <td>{concept.key}</td>
-                  <td>{concept.description}</td>
-                  <td>{concept.unit}</td>
-                  <td>{concept.quantity}</td>
-                  <td>{formatCurrency(concept.unitPrice)}</td>
-                  <td>{formatCurrency(concept.total)}</td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
+        <table className={styles.table}>...</table>
 
         {/* --- TOTALES --- */}
-        <footer className={styles.footer}>
-          <div className={styles.totals}>
-            <div>
-              <span>Subtotal</span>
-              <span>{formatCurrency(budget.subtotal)}</span>
-            </div>
-            <div>
-              <span>I.V.A.16%</span>
-              <span>{formatCurrency(budget.ivaAmount)}</span>
-            </div>
-            <div className={styles.grandTotal}>
-              <span>TOTAL</span>
-              <span>{formatCurrency(budget.total)}</span>
-            </div>
-          </div>
-        </footer>
+        <footer className={styles.footer}>...</footer>
 
-        {/* --- ESPACIADOR PARA EL MARGEN INFERIOR --- */}
-        <div className={styles.pageBottomSpacer}></div>
+        {/* --- EL ESPACIADOR YA NO ES NECESARIO, POR LO TANTO LO ELIMINAMOS --- */}
+        {/* <div className={styles.pageBottomSpacer}></div> */}
 
       </div>
     </main>

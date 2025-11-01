@@ -1,46 +1,36 @@
-/* --- reporte.module.css (VERSIÓN FINAL Y DEFINITIVA) --- */
+/* --- reporte.module.css (VERSIÓN CON REPORTE POR PÁGINA) --- */
 
-/* Estilos para la vista en el navegador (opcional, para previsualización) */
-.reportPage {
-  width: 21.59cm;
-  margin: 1cm auto;
-  padding: 2cm;
-  border: 1px solid transparent;
-  background-color: transparent;
+/* --- 1. CONFIGURACIÓN DE PÁGINA (¡LA NUEVA HERRAMIENTA CLAVE!) --- */
+/* Esto define los márgenes para CADA página del PDF */
+@page {
+  size: Letter; /* Tamaño de hoja */
+  margin: 3.5cm 2cm 3cm 2cm; /* Márgenes: [arriba] [derecha] [abajo] [izquierda] */
 }
 
-/* --- ESTILOS CRÍTICOS PARA LA IMPRESIÓN DEL PDF --- */
+/* --- 2. ESTILOS PARA LA IMPRESIÓN DEL PDF --- */
 @media print {
-  /* 1. EL FONDO: Se repite en cada página como marca de agua */
+  /* El fondo se repite en cada página */
   .background {
     position: fixed;
     top: 0;
     left: 0;
-    width: 21.59cm; /* Ancho de la hoja Carta */
-    height: 27.94cm; /* Alto de la hoja Carta */
+    width: 21.59cm;
+    height: 27.94cm;
     z-index: -1;
   }
 
-  /* 2. LA PÁGINA: El contenedor principal que define los márgenes */
+  /* El contenedor principal ahora ocupa todo el ancho y su altura es dinámica */
   .reportPage {
-    width: 21.59cm;
-    min-height: 15cm;
-    box-sizing: border-box;
-    /* MÁRGENES DE CONTENIDO: [arriba] [derecha] [abajo] [izquierda] */
-    padding: 3.5cm 2cm 5cm 2cm; /* <-- Ajusta el tercer valor (3cm) a tu gusto */
-    page-break-after: 15cm; /* Permite que el contenido fluya a la siguiente página */
+    width: 100%; /* Ocupa el ancho disponible dentro de los márgenes de @page */
+    /* No necesitamos padding ni min-height aquí, @page lo controla */
+    background-color: transparent; /* Aseguramos que sea transparente */
   }
 
-  /* 3. EL CONTENIDO: Sin estilos que puedan interferir */
+  /* El contenido también debe ser transparente */
   .content {
     position: relative;
     z-index: 2;
-  }
-
-  /* 4. EL ESPACIADOR: Nuestra solución para el margen inferior final */
-  .pageBottomSpacer {
-    height: 5cm; /* <-- Este es el espacio que se forzará al final */
-    width: 100%;
+    background-color: transparent;
   }
 
   /* Evitar cortes de elementos no deseados */
@@ -52,7 +42,7 @@
   }
 }
 
-/* --- Estilos de componentes (sin cambios) --- */
+/* --- 3. ESTILOS DE COMPONENTES (sin cambios) --- */
 .label { font-weight: bold; display: block; margin-bottom: 4px; font-size: 11px; }
 .header { display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 12px; }
 .atencion { max-width: 60%; }
@@ -70,7 +60,19 @@
 .table th:nth-child(6), .table td:nth-child(6) { text-align: right; }
 .titleRow td { padding-top: 10px; }
 .conceptRow td { border-bottom: 1px solid #eee; }
-.footer { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+.footer { display: flex; justify-content: flex-end; margin-bottom: 0; }
 .totals { width: 250px; font-size: 12px; }
 .totals > div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #eee; }
 .totals .grandTotal { font-weight: bold; font-size: 14px; border-bottom: none; }
+
+/* --- 4. ESTILOS PARA VISTA EN NAVEGADOR (opcional) --- */
+/* Esto solo afecta cómo se ve en pantalla, no en el PDF */
+@media screen {
+  .reportPage {
+    width: 21.59cm;
+    margin: 1cm auto;
+    padding: 2cm;
+    border: 0 solid transparent;
+    background-color: transparent;
+  }
+}
