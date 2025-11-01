@@ -23,9 +23,8 @@
     left: 0;
     width: 100vw; /* 3. 100% del ancho de la página */
     height: 100vh; /* 4. 100% del alto de la página */
-    background: url('/membrete.png') no-repeat center center;
-    background-size: cover; /* 5. Hace que la imagen cubra todo sin deformarse */
-    z-index: -1; /* 6. Lo envía detrás de todo el contenido */
-    pointer-events: none; /* 7. Evita que bloquee interacciones (buena práctica) */
+    background: url('/membrete.png') no-repeat center center fixed !important;
+    background-size: cover !important; /* 5. Hace que la imagen cubra todo sin deformarse */
+
   }
 }
