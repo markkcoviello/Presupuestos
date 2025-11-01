@@ -55,14 +55,15 @@ export default async function ReportePage({ params }: { params: { id: string } }
   const budget = await getBudgetData(params.id) as BudgetData; 
   const concepts = budget.concepts;
 
-  return (
-    <main className={styles.reportPage}>
+return (
+    <>
       <img 
         src="/membrete.png" 
         className={styles.background} 
         alt="Membrete" 
       />
-      <div className={styles.content}>
+      <main className={styles.reportPage}>
+        <div className={styles.content}>
         
         {/* --- ENCABEZADO (CLIENTE, FOLIO, FECHA) --- */}
         <header className={styles.header}>
