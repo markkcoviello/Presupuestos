@@ -1,0 +1,22 @@
+/* --- src/app/print-styles.css (Aquí está tu avance de los padding) --- */
+
+/* --- 1. CONFIGURACIÓN DE PÁGINA (Controla márgenes en CADA hoja) --- */
+@page {
+  size: Letter;
+  margin: 3.5cm 2cm 3cm 2cm; /* ¡TUS MÁRGENES QUE YA FUNCIONABAN! */
+}
+
+/* --- 2. ESTILOS GLOBALES PARA LA IMPRESIÓN --- */
+@media print {
+  html, body {
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: url('/membrete.png') no-repeat center center fixed;
+    background-size: cover;
+  }
+}

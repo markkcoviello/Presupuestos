@@ -1,3 +1,8 @@
+// --- src/app/layout.tsx ---
+import './print-styles.css'; // <-- ¡AÑADE ESTA LÍNEA!
+
+
+// ... resto de tu layout.tsx ...
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
