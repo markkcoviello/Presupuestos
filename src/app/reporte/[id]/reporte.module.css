@@ -1,6 +1,51 @@
-/* --- src/app/reporte/[id]/reporte.module.css (SOLO ESTILOS DE COMPONENTES) --- */
+/* --- src/app/reporte/[id]/reporte.module.css (VOLVIENDO A LA VERSIÓN ANTERIOR Y CORREGIDA) --- */
 
-/* --- ESTILOS DE COMPONENTES --- */
+/* --- 1. CONFIGURACIÓN DE PÁGINA (Controla márgenes en CADA hoja) --- */
+@page {
+  size: Letter;
+  margin: 3.5cm 2cm 3cm 2cm; /* [arriba] [derecha] [abajo] [izquierda] */
+}
+
+/* --- 2. ESTILOS PARA LA IMPRESIÓN DEL PDF --- */
+@media print {
+  /* Forzamos la impresión de fondos y quitamos márgenes base */
+  :global(html) { /* <-- SEPARADO */
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  :global(body) { /* <-- SEPARADO */
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: url('/membrete.png') no-repeat center center fixed;
+    background-size: cover;
+  }
+
+  /* El resto de tus reglas se mantienen igual */
+  .reportPage {
+    width: 100%;
+    background-color: transparent;
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    background-color: transparent;
+  }
+
+  .table tr {
+    page-break-inside: avoid;
+  }
+  .footer {
+    page-break-inside: avoid;
+  }
+}
+
+/* --- 3. ESTILOS DE COMPONENTES (sin cambios) --- */
 .label { font-weight: bold; display: block; margin-bottom: 4px; font-size: 11px; }
 .header { display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 12px; }
 .atencion { max-width: 60%; }
@@ -23,7 +68,7 @@
 .totals > div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #eee; }
 .totals .grandTotal { font-weight: bold; font-size: 14px; border-bottom: none; }
 
-/* --- ESTILOS PARA VISTA EN NAVEGADOR (Opcional) --- */
+/* --- 4. ESTILOS PARA VISTA EN NAVEGADOR (Opcional) --- */
 @media screen {
   .reportPage {
     width: 21.59cm;
