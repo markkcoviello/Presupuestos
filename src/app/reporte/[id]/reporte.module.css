@@ -9,32 +9,32 @@
 
 /* --- 2. ESTILOS PARA LA IMPRESIÓN DEL PDF --- */
 @media print {
-  /* El fondo se repite en cada página */
-  .background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%vw;
-    height: 100%vh;
-    z-index: -1;
-    object-fit: cover;
+  /* Forzamos la impresión de fondos y quitamos márgenes base */
+  html, body {
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important; /* Clave para Chrome/Webkit */
+    print-color-adjust: exact !important;         /* Estándar */
   }
 
-  /* El contenedor principal ahora ocupa todo el ancho y su altura es dinámica */
+  /* Aplicamos el fondo al body, que a veces es más fiable que al html */
+  body {
+    background: url('/membrete.png') no-repeat center center fixed;
+    background-size: cover; /* Asegura que cubra toda la página */
+  }
+
+  /* El resto de tus reglas se mantienen igual */
   .reportPage {
-    width: 100%; /* Ocupa el ancho disponible dentro de los márgenes de @page */
-    /* No necesitamos padding ni min-height aquí, @page lo controla */
-    background-color: transparent; /* Aseguramos que sea transparente */
+    width: 100%;
+    background-color: transparent; /* El contenido debe ser transparente */
   }
 
-  /* El contenido también debe ser transparente */
   .content {
     position: relative;
     z-index: 2;
     background-color: transparent;
   }
 
-  /* Evitar cortes de elementos no deseados */
   .table tr {
     page-break-inside: avoid;
   }
@@ -66,8 +66,7 @@
 .totals > div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #eee; }
 .totals .grandTotal { font-weight: bold; font-size: 14px; border-bottom: none; }
 
-/* --- 4. ESTILOS PARA VISTA EN NAVEGADOR (opcional) --- */
-/* Esto solo afecta cómo se ve en pantalla, no en el PDF */
+/* --- 4. ESTILOS PARA VISTA EN NAVEGADOR (Opcional) --- */
 @media screen {
   .reportPage {
     width: 21.59cm;
