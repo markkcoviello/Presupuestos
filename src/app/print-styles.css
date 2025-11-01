@@ -15,16 +15,8 @@
     print-color-adjust: exact !important;
   }
 
-  /* --- LA NUEVA TÉCNICA: UN FONDO FANTASMA --- */
-  body::before {
-    content: ""; /* 1. Requerido para que el pseudo-elemento exista */
-    position: fixed; /* 2. Lo posiciona en relación a la página impresa */
-    top: 0;
-    left: 0;
-    width: 100vw; /* 3. 100% del ancho de la página */
-    height: 100vh; /* 4. 100% del alto de la página */
-    background: url('/membrete.png') no-repeat center center fixed !important;
-    background-size: cover !important; /* 5. Hace que la imagen cubra todo sin deformarse */
-
+  body {
+    /* --- PRUEBA 1: ¿SE VEE ESTE COLOR? --- */
+    background: red !important;
   }
 }
