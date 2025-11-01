@@ -14,9 +14,10 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 21.59cm;
-    height: 27.94cm;
+    width: 100%vw;
+    height: 100%vh;
     z-index: -1;
+    object-fit: cover;
   }
 
   /* El contenedor principal ahora ocupa todo el ancho y su altura es dinámica */
