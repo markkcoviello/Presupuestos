@@ -24,10 +24,10 @@
   /* 2. LA PÁGINA: El contenedor principal que define los márgenes */
   .reportPage {
     width: 21.59cm;
-    min-height: 27.94cm;
+    min-height: 15cm;
     box-sizing: border-box;
     /* MÁRGENES DE CONTENIDO: [arriba] [derecha] [abajo] [izquierda] */
-    padding: 3.5cm 2cm 3cm 2cm; /* <-- Ajusta el tercer valor (3cm) a tu gusto */
+    padding: 3.5cm 2cm 5cm 2cm; /* <-- Ajusta el tercer valor (3cm) a tu gusto */
     page-break-after: 15cm; /* Permite que el contenido fluya a la siguiente página */
   }
 
