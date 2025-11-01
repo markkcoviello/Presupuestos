@@ -1,9 +1,9 @@
-/* --- src/app/print-styles.css (Aquí está tu avance de los padding) --- */
+/* --- src/app/print-styles.css (VERSIÓN FINAL PARA FONDO COMPLETO) --- */
 
-/* --- 1. CONFIGURACIÓN DE PÁGINA (Controla márgenes en CADA hoja) --- */
+/* --- 1. CONFIGURACIÓN DE PÁGINA (TUS MÁRGENES PERFECTOS) --- */
 @page {
   size: Letter;
-  margin: 3.5cm 2cm 3cm 2cm; /* ¡TUS MÁRGENES QUE YA FUNCIONABAN! */
+  margin: 3.5cm 2cm 3cm 2cm; /* ¡NO CAMBIES ESTO! */
 }
 
 /* --- 2. ESTILOS GLOBALES PARA LA IMPRESIÓN --- */
@@ -15,8 +15,17 @@
     print-color-adjust: exact !important;
   }
 
-  body {
-    background: url('/membrete.png') no-repeat center center fixed;
-    background-size: cover;
+  /* --- LA NUEVA TÉCNICA: UN FONDO FANTASMA --- */
+  body::before {
+    content: ""; /* 1. Requerido para que el pseudo-elemento exista */
+    position: fixed; /* 2. Lo posiciona en relación a la página impresa */
+    top: 0;
+    left: 0;
+    width: 100vw; /* 3. 100% del ancho de la página */
+    height: 100vh; /* 4. 100% del alto de la página */
+    background: url('/membrete.png') no-repeat center center;
+    background-size: cover; /* 5. Hace que la imagen cubra todo sin deformarse */
+    z-index: -1; /* 6. Lo envía detrás de todo el contenido */
+    pointer-events: none; /* 7. Evita que bloquee interacciones (buena práctica) */
   }
 }
