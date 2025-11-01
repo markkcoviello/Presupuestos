@@ -68,8 +68,6 @@ export async function GET(
       },
     });
 
-    // No cerramos el browser aquí, lo hacemos en el bloque 'finally'
-    
     const sanitize = (text: string) => {
       return text
         .normalize('NFD')
@@ -96,8 +94,6 @@ export async function GET(
       headers: { 'Content-Type': 'application/json' },
     });
   } finally {
-    // Este bloque se ejecuta siempre, tanto si hay éxito como si hay error.
-    // Es el lugar correcto para asegurar que el navegador se cierre.
     if (browser) {
       await browser.close();
     }

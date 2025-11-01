@@ -21,7 +21,7 @@ type Concept = {
 type BudgetData = Budget & {
   client: Client;
   recipient: Recipient;
-  concepts: Concept[]; // Aseguramos que el tipo incluya el array de conceptos
+  concepts: Concept[];
 };
 
 /* --- 2. FUNCIÓN PARA OBTENER LOS DATOS (CORREGIDA) --- */
@@ -31,7 +31,7 @@ async function getBudgetData(id: string) {
     include: {
       client: true, 
       recipient: true,
-      concepts: true, // <-- ¡ESTA ES LA LÍNEA CLAVE QUE FALTABA!
+      concepts: true, // <-- ¡ESTA ES LA LÍNEA CLAVE!
     },
   });
 
@@ -53,7 +53,7 @@ const formatCurrency = (value: number | null | undefined) => {
 /* --- 4. El Componente del Reporte --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
   const budget = await getBudgetData(params.id) as BudgetData; 
-  const concepts = budget.concepts; // Ahora 'concepts' sí existirá
+  const concepts = budget.concepts;
 
   return (
     <main className={styles.reportPage}>
@@ -64,7 +64,7 @@ export default async function ReportePage({ params }: { params: { id: string } }
       />
       <div className={styles.content}>
         
-        {/* --- ENCABEZADO (CLIENTE, FOLIO, FECHA) --- */}
+        {/* --- ENCABEZADO --- */}
         <header className={styles.header}>
           <div className={styles.atencion}>
             <span className={styles.label}>ATENCIÓN</span>
