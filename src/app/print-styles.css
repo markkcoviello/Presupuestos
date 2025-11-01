@@ -1,4 +1,4 @@
-/* --- src/app/print-styles.css (DEPURANDO EL FANTASMA) --- */
+/* --- src/app/print-styles.css (INTENTO FINAL: FONDO EN HTML) --- */
 
 /* --- 1. CONFIGURACIÓN DE PÁGINA (TUS MÁRGENES PERFECTOS) --- */
 @page {
@@ -8,22 +8,19 @@
 
 /* --- 2. ESTILOS GLOBALES PARA LA IMPRESIÓN --- */
 @media print {
-  html, body {
+  /* Reseteamos body para que no interfiera */
+  body {
     margin: 0;
     padding: 0;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
   }
 
-  /* --- PRUEBA FINAL: ¿SE VEE ESTE CUADRO AZUL EN TODA LA HOJA? --- */
-  body::before {
-    content: ""; /* Requerido para que exista */
-    position: fixed; /* Lo saca del flujo y lo ancla a la página */
-    top: 0;
-    left: 0;
-    width: 100vw; /* 100% del ancho del viewport (la hoja entera) */
-    height: 100vh; /* 100% del alto del viewport (la hoja entera) */
-    background: cyan !important; /* Un color brillante para que sea obvio */
-    z-index: -1; /* Detrás de todo el contenido */
+  /* --- INTENTO FINAL: APLICAMOS EL FONDO DIRECTAMENTE A HTML --- */
+  html {
+    margin: 0;
+    padding: 0;
+    background: url('/membrete.png') no-repeat center center fixed;
+    background-size: cover;
+    -webkit-print-color-adjust: exact !important; /* ¡Crucial! */
+    print-color-adjust: exact !important;         /* ¡Crucial! */
   }
 }
