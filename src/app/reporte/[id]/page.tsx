@@ -55,13 +55,15 @@ export default async function ReportePage({ params }: { params: { id: string } }
   const budget = await getBudgetData(params.id) as BudgetData; 
   const concepts = budget.concepts;
 
-return (
+  return (
     <>
+      {/* --- REVISA QUE ESTA ETIQUETA <img /> TERMINE EXACTAMENTE ASÍ --- */}
       <img 
         src="/membrete.png" 
         className={styles.background} 
         alt="Membrete" 
       />
+      
       <main className={styles.reportPage}>
         <div className={styles.content}>
         
