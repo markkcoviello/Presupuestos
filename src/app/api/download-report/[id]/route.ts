@@ -1,4 +1,4 @@
-// --- CÓDIGO ACTUALIZADO para: src/app/api/download-report/[id]/route.ts ---
+// --- CÓDIGO COMPLETO Y CORREGIDO para: src/app/api/download-report/[id]/route.ts ---
 
 import { NextResponse } from 'next/server';
 import puppeteer from 'puppeteer-core';
@@ -29,38 +29,47 @@ export async function GET(
   let browser;
 
   const host = process.env.VERCEL_URL
-    ? `https://presupuestos-seven.vercel.app` 
+    ? `https://presupuestos-seven.vercel.app`
     : 'http://localhost:3000';
     
   const url = `${host}/reporte/${id}`;
   
   try {
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(),
-    headless: chromium.headless,
-  });
+    const browserArgs = [
+      ...chromium.args,
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--single-process'
+    ];
 
-  const page = await browser.newPage();
-  await page.goto(url, { waitUntil: 'networkidle2' });
+    browser = await puppeteer.launch({
+      args: browserArgs,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
+    });
 
-  const pdfBuffer = await page.pdf({
-    format: 'Letter',
-    printBackground: true,
-    // MÁRGENES EN CERO. Controlamos todo con CSS.
-    margin: {
-      top: '0cm',
-      bottom: '0cm',
-      left: '0cm',
-      right: '0cm',
-    },
-  });
+    const page = await browser.newPage();
+    
+    await page.goto(url, {
+      waitUntil: 'networkidle2',
+    });
 
-  await browser.close();
-  // ... (resto del código para devolver el PDF) ...
-} catch (error) { /* ... */ }
+    const pdfBuffer = await page.pdf({
+      format: 'Letter',   
+      printBackground: true, 
+      margin: {
+        top: '0cm',
+        right: '0cm',
+        bottom: '0cm',
+        left: '0cm',
+      },
+    });
 
+    // No cerramos el browser aquí, lo hacemos en el bloque 'finally'
+    
     const sanitize = (text: string) => {
       return text
         .normalize('NFD')
@@ -87,6 +96,8 @@ export async function GET(
       headers: { 'Content-Type': 'application/json' },
     });
   } finally {
+    // Este bloque se ejecuta siempre, tanto si hay éxito como si hay error.
+    // Es el lugar correcto para asegurar que el navegador se cierre.
     if (browser) {
       await browser.close();
     }
