@@ -10,23 +10,23 @@
 /* --- 2. ESTILOS PARA LA IMPRESIÓN DEL PDF --- */
 @media print {
   /* Forzamos la impresión de fondos y quitamos márgenes base */
-  html, body {
+  :global(html), :global(body) { /* <-- ¡CAMBIO AQUÍ! */
     margin: 0;
     padding: 0;
-    -webkit-print-color-adjust: exact !important; /* Clave para Chrome/Webkit */
-    print-color-adjust: exact !important;         /* Estándar */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* Aplicamos el fondo al body, que a veces es más fiable que al html */
-  body {
+  /* Aplicamos el fondo al body */
+  :global(body) { /* <-- ¡CAMBIO AQUÍ! */
     background: url('/membrete.png') no-repeat center center fixed;
-    background-size: cover; /* Asegura que cubra toda la página */
+    background-size: cover;
   }
 
   /* El resto de tus reglas se mantienen igual */
   .reportPage {
     width: 100%;
-    background-color: transparent; /* El contenido debe ser transparente */
+    background-color: transparent;
   }
 
   .content {
