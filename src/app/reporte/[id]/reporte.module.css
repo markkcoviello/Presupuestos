@@ -28,7 +28,7 @@
     box-sizing: border-box;
     /* MÁRGENES DE CONTENIDO: [arriba] [derecha] [abajo] [izquierda] */
     padding: 3.5cm 2cm 3cm 2cm; /* <-- Ajusta el tercer valor (3cm) a tu gusto */
-    page-break-after: auto; /* Permite que el contenido fluya a la siguiente página */
+    page-break-after: 15cm; /* Permite que el contenido fluya a la siguiente página */
   }
 
   /* 3. EL CONTENIDO: Sin estilos que puedan interferir */
