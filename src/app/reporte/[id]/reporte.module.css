@@ -39,7 +39,7 @@
 
   /* 4. EL ESPACIADOR: Nuestra solución para el margen inferior final */
   .pageBottomSpacer {
-    height: 3cm; /* <-- Este es el espacio que se forzará al final */
+    height: 5cm; /* <-- Este es el espacio que se forzará al final */
     width: 100%;
   }
 
@@ -70,7 +70,7 @@
 .table th:nth-child(6), .table td:nth-child(6) { text-align: right; }
 .titleRow td { padding-top: 10px; }
 .conceptRow td { border-bottom: 1px solid #eee; }
-.footer { display: flex; justify-content: flex-end; margin-bottom: 0; }
+.footer { display: flex; justify-content: flex-end; margin-bottom: 10px; }
 .totals { width: 250px; font-size: 12px; }
 .totals > div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #eee; }
 .totals .grandTotal { font-weight: bold; font-size: 14px; border-bottom: none; }
