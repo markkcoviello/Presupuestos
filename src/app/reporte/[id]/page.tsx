@@ -54,18 +54,14 @@ export default async function ReportePage({ params }: { params: { id: string } }
   const budget = await getBudgetData(params.id) as BudgetData; 
   const concepts = budget.concepts;
 
+export default async function ReportePage({ params }: { params: { id: string } }) {
+  const budget = await getBudgetData(params.id) as BudgetData; 
+  const concepts = budget.concepts;
+
   return (
-    <>
-      {/* --- IMAGEN DE FONDO FUERA DEL CONTENEDOR PRINCIPAL --- */}
-      <img 
-        src="/membrete.png" 
-        className={styles.background} 
-        alt="Membrete" 
-      />
-      
-      {/* --- CONTENEDOR PRINCIPAL CON MÁRGENES CONTROLADOS POR @page --- */}
-      <main className={styles.reportPage}>
-        <div className={styles.content}>
+    // --- YA NO HAY IMAGEN AQUÍ ---
+    <main className={styles.reportPage}>
+      <div className={styles.content}>
           
           {/* --- ENCABEZADO --- */}
           <header className={styles.header}>
