@@ -1,3 +1,4 @@
+// Schema updated for PDF fix on May 21, 2024
 generator client {
   provider = "prisma-client-js"
 }
