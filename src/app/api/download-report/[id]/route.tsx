@@ -9,24 +9,18 @@ const prisma = new PrismaClient();
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
-  // --- NUEVA VALIDACIÓN ---
-  // 1. Verificamos que el 'id' exista en los parámetros de la URL.
-  if (!id) {
-    console.error("Error: El parámetro 'id' no fue proporcionado en la URL.");
+  // --- VALIDACIÓN CORREGIDA PARA IDs DE TIPO STRING (CUID) ---
+  // Verificamos que el 'id' exista y no sea una cadena vacía.
+  if (!id || id.trim() === '') {
+    console.error("Error: El parámetro 'id' no fue proporcionado o está vacío.");
     return new NextResponse('Falta el ID del presupuesto en la URL.', { status: 400 }); // 400 Bad Request
   }
 
-  // 2. Convertimos el 'id' a número y verificamos que sea válido.
-  const presupuestoId = parseInt(id, 10);
-  if (isNaN(presupuestoId)) {
-    console.error(`Error: El ID proporcionado no es un número válido. ID recibido: ${id}`);
-    return new NextResponse('El ID del presupuesto debe ser un número.', { status: 400 });
-  }
-
   try {
-    // 3. Usamos la variable 'presupuestoId' que ya validamos.
+    // --- CAMBIO CLAVE ---
+    // Usamos el 'id' directamente como una cadena de texto, sin convertirlo a número.
     const presupuesto = await prisma.budget.findUnique({
-      where: { id: presupuestoId },
+      where: { id: id }, // Prisma espera el ID como string
       include: { conceptos: true },
     });
 
