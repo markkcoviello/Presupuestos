@@ -1,8 +1,8 @@
+// src/app/api/download-report/[id]/route.tsx
+
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import ReactDOMServer from 'react-dom/server';
-// La importación de un componente React ahora funciona correctamente en un archivo .tsx
-import PresupuestoPDF from '@/components/PresupuestoPDF';
+import { generatePdfHtml } from '@/lib/pdf-generator';
 
 const prisma = new PrismaClient();
 
@@ -19,35 +19,14 @@ export async function GET(request: Request, { params }: { params: { id: string }
       return new NextResponse('Presupuesto no encontrado', { status: 404 });
     }
 
-    // Ahora TypeScript entiende esta sintaxis JSX
-    const html = ReactDOMServer.renderToString(
-      <PresupuestoPDF presupuesto={presupuesto} />
-    );
+    const html = generatePdfHtml(presupuesto);
 
-    const fullHtml = `
-      <!DOCTYPE html>
-      <html lang="es">
-        <head>
-          <meta charset="UTF-8" />
-          <title>Presupuesto - ${presupuesto.folio}</title>
-        </head>
-        <body>
-          ${html}
-        </body>
-      </html>
-    `;
-
-    // --- PARÁMETROS CORREGIDOS PARA PDFSHIFT ---
     const pdfParams = {
-      source: fullHtml,
+      source: html,
       filename: `presupuesto-${presupuesto.folio}.pdf`,
-      // MÁRGENES CORREGIDOS: Se usa un solo parámetro "margin" con el formato "top right bottom left".
-      // Esto resuelve el error "Rogue field".
       margin: "25mm 20mm 25mm 20mm", 
       format: "A4",
       landscape: false,
-      // IMPORTANTE: Forzar a PDFShift a usar los estilos de pantalla (@media screen) en lugar de los de impresión (@media print).
-      // Esto es crucial para que la imagen de fondo y otros colores se rendericen correctamente.
       usePrintMedia: false, 
       auth: {
         api_key: process.env.PDFSHIFT_API_KEY,
