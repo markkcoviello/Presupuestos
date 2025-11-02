@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import ReactDOMServer from 'react-dom/server';
+// La importación de un componente React ahora funciona correctamente en un archivo .tsx
 import PresupuestoPDF from '@/components/PresupuestoPDF';
 
 const prisma = new PrismaClient();
 
-export async function GET(request, { params }) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
   try {
@@ -18,6 +19,7 @@ export async function GET(request, { params }) {
       return new NextResponse('Presupuesto no encontrado', { status: 404 });
     }
 
+    // Ahora TypeScript entiende esta sintaxis JSX
     const html = ReactDOMServer.renderToString(
       <PresupuestoPDF presupuesto={presupuesto} />
     );
@@ -63,7 +65,6 @@ export async function GET(request, { params }) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Error de PDFShift:', errorData);
-      // Lanza un error más descriptivo para que lo puedas ver en tu consola de servidor
       throw new Error(`Error al generar el PDF con PDFShift: ${errorData.message || JSON.stringify(errorData.errors)}`);
     }
 
@@ -79,6 +80,6 @@ export async function GET(request, { params }) {
 
   } catch (error) {
     console.error('Error al generar el PDF:', error);
-    return new NextResponse(error.message, { status: 500 });
+    return new NextResponse((error as Error).message, { status: 500 });
   }
 }
