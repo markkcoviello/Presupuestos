@@ -1,4 +1,4 @@
-// --- CÓDIGO COMPLETO Y CORREGIDO para: src/app/reporte/[id]/page.tsx ---
+// --- CÓDIGO COMPLETO para: src/app/reporte/[id]/page.tsx ---
 
 import { db } from '@/lib/db'; 
 import { notFound } from 'next/navigation';
@@ -49,14 +49,12 @@ const formatCurrency = (value: number | null | undefined) => {
   });
 };
 
-/* --- 4. El Componente del Reporte (EXPORT DEFAULT) --- */
+/* --- 4. El Componente del Reporte --- */
 export default async function ReportePage({ params }: { params: { id: string } }) {
-  // Este código debe estar DENTRO de la función
   const budget = await getBudgetData(params.id) as BudgetData; 
   const concepts = budget.concepts;
 
   return (
-    // La imagen de fondo ahora está en el CSS, no aquí
     <main className={styles.reportPage}>
       <div className={styles.content}>
         

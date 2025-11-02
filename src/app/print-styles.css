@@ -1,12 +1,10 @@
-/* --- src/app/print-styles.css (PRUEBA FINAL MÍNIMA) --- */
+/* --- src/app/print-styles.css (MODIFICADO) --- */
 
-/* --- 1. CONFIGURACIÓN DE PÁGINA (TUS MÁRGENES PERFECTOS) --- */
 @page {
   size: Letter;
   margin: 3.5cm 2cm 3cm 2cm;
 }
 
-/* --- 2. ESTILOS GLOBALES PARA LA IMPRESIÓN --- */
 @media print {
   html, body {
     margin: 0;
@@ -15,8 +13,9 @@
     print-color-adjust: exact !important;
   }
 
-  /* --- PRUEBA: ¿SE VEE ESTE COLOR EN HTML? --- */
-  html {
-    background: lime !important; /* Un color verde lima muy visible */
+  /* --- CAMBIO CLAVE: Usamos una clase específica --- */
+  body.report-background {
+    background: url('/membrete.png') no-repeat center center fixed;
+    background-size: cover;
   }
 }
