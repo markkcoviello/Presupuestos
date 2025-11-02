@@ -1,9 +1,9 @@
 // lib/pdf-generator.ts
 
-// Importamos la imagen de fondo para que Next.js la gestione
 import fondoImage from '../public/fondo-presupuesto.png';
 
-interface Concepto {
+// La interfaz ahora se llama 'Item' para coincidir con Prisma
+interface Item {
   codigo: string;
   descripcion: string;
   unidad: string;
@@ -18,7 +18,7 @@ interface Presupuesto {
   subtotal: number;
   iva: number;
   total: number;
-  conceptos: Concepto[];
+  items: Item[]; // <-- IMPORTANTE: Usamos 'items'
 }
 
 export function generatePdfHtml(presupuesto: Presupuesto): string {
@@ -28,7 +28,6 @@ export function generatePdfHtml(presupuesto: Presupuesto): string {
     day: 'numeric',
   });
 
-  // Usamos template literals para construir el HTML
   return `
     <!DOCTYPE html>
     <html lang="es">
@@ -36,103 +35,25 @@ export function generatePdfHtml(presupuesto: Presupuesto): string {
         <meta charset="UTF-8" />
         <title>Presupuesto - ${presupuesto.folio}</title>
         <style>
-          /* --- ESTILOS --- */
-          @page {
-            margin: 0;
-            size: A4;
-          }
-          
-          body {
-            margin: 0;
-            font-family: 'Helvetica Neue', 'Arial', sans-serif;
-            font-size: 12px;
-            color: #333;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-
-          .page-wrapper {
-            width: 100vw;
-            height: 100vh;
-            background-image: url(${fondoImage.src});
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-          }
-
-          .header {
-            padding: 30px 50px 10px 50px;
-            text-align: right;
-          }
-          .header h1 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: bold;
-            color: #0056b3;
-          }
-          .header p {
-            margin: 4px 0;
-            font-size: 14px;
-            color: #555;
-          }
-
-          .content {
-            padding: 10px 50px;
-            flex-grow: 1;
-          }
-
-          .footer {
-            padding: 10px 50px 30px 50px;
-            text-align: right;
-          }
-
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.85);
-          }
-          th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-            vertical-align: top;
-          }
-          th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            font-size: 11px;
-          }
-          .concepto-descripcion {
-            white-space: pre-wrap;
-            max-width: 400px;
-            font-size: 11px;
-          }
+          @page { margin: 0; size: A4; }
+          body { margin: 0; font-family: 'Helvetica Neue', 'Arial', sans-serif; font-size: 12px; color: #333; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+          .page-wrapper { width: 100vw; height: 100vh; background-image: url(${fondoImage.src}); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+          .header { padding: 30px 50px 10px 50px; text-align: right; }
+          .header h1 { margin: 0; font-size: 28px; font-weight: bold; color: #0056b3; }
+          .header p { margin: 4px 0; font-size: 14px; color: #555; }
+          .content { padding: 10px 50px; flex-grow: 1; }
+          .footer { padding: 10px 50px 30px 50px; text-align: right; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: rgba(255, 255, 255, 0.85); }
+          th, td { border: 1px solid #ccc; padding: 10px; text-align: left; vertical-align: top; }
+          th { background-color: #f2f2f2; font-weight: bold; font-size: 11px; }
+          .concepto-descripcion { white-space: pre-wrap; max-width: 400px; font-size: 11px; }
           .codigo { width: 10%; }
           .unidad { width: 10%; }
           .cantidad { width: 10%; text-align: center; }
           .pu, .total { width: 15%; text-align: right; }
-
-          .totales {
-            margin-top: 20px;
-            text-align: right;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 10px;
-            border: 1px solid #ccc;
-          }
-          .totales p {
-            margin: 5px 0;
-            font-size: 14px;
-          }
-          .totales .total {
-            font-weight: bold;
-            font-size: 18px;
-            color: #0056b3;
-          }
+          .totales { margin-top: 20px; text-align: right; background-color: rgba(255, 255, 255, 0.9); padding: 10px; border: 1px solid #ccc; }
+          .totales p { margin: 5px 0; font-size: 14px; }
+          .totales .total { font-weight: bold; font-size: 18px; color: #0056b3; }
         </style>
       </head>
       <body>
@@ -143,7 +64,6 @@ export function generatePdfHtml(presupuesto: Presupuesto): string {
             <p>${presupuesto.description}</p>
             <p>${formattedDate}</p>
           </div>
-
           <div class="content">
             <table>
               <thead>
@@ -157,20 +77,19 @@ export function generatePdfHtml(presupuesto: Presupuesto): string {
                 </tr>
               </thead>
               <tbody>
-                ${presupuesto.conceptos.map(concepto => `
+                ${presupuesto.items.map(item => `
                   <tr>
-                    <td>${concepto.codigo}</td>
-                    <td class="concepto-descripcion">${concepto.descripcion}</td>
-                    <td>${concepto.unidad}</td>
-                    <td>${concepto.cantidad}</td>
-                    <td>$${concepto.precioUnitario.toFixed(2)}</td>
-                    <td>$${concepto.total.toFixed(2)}</td>
+                    <td>${item.codigo}</td>
+                    <td class="concepto-descripcion">${item.descripcion}</td>
+                    <td>${item.unidad}</td>
+                    <td>${item.cantidad}</td>
+                    <td>$${item.precioUnitario.toFixed(2)}</td>
+                    <td>$${item.total.toFixed(2)}</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
           </div>
-
           <div class="footer">
             <div class="totales">
               <p>Subtotal: $${presupuesto.subtotal.toFixed(2)}</p>

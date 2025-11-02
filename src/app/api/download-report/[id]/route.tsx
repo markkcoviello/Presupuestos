@@ -1,7 +1,8 @@
-// src/app/api/download-report/[id]/route.tsx
+// app/api/download-report/[id]/route.tsx
 
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+// La ruta de importación es correcta porque '@/' apunta a la raíz del proyecto
 import { generatePdfHtml } from '@/lib/pdf-generator';
 
 const prisma = new PrismaClient();
@@ -9,19 +10,16 @@ const prisma = new PrismaClient();
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
-  // --- VALIDACIÓN CORREGIDA PARA IDs DE TIPO STRING (CUID) ---
-  // Verificamos que el 'id' exista y no sea una cadena vacía.
   if (!id || id.trim() === '') {
     console.error("Error: El parámetro 'id' no fue proporcionado o está vacío.");
-    return new NextResponse('Falta el ID del presupuesto en la URL.', { status: 400 }); // 400 Bad Request
+    return new NextResponse('Falta el ID del presupuesto en la URL.', { status: 400 });
   }
 
   try {
-    // --- CAMBIO CLAVE ---
-    // Usamos el 'id' directamente como una cadena de texto, sin convertirlo a número.
+    // --- CAMBIO CLAVE: Usamos 'items' en lugar de 'conceptos' ---
     const presupuesto = await prisma.budget.findUnique({
-      where: { id: id }, // Prisma espera el ID como string
-      include: { conceptos: true },
+      where: { id: id },
+      include: { items: true }, // <-- CORREGIDO
     });
 
     if (!presupuesto) {
