@@ -54,7 +54,7 @@ export async function GET(
         source: htmlContent,
         format: 'Letter',
         landscape: false,
-        print_background: true,
+
       }),
     });
 
